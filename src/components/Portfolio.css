@@ -1,0 +1,180 @@
+.portfolio__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 40px;
+}
+
+.portfolio__intro {
+  max-width: 540px;
+  text-align: right;
+}
+
+.portfolio__intro-title {
+  font-family: var(--font-pirso);
+  font-weight: 600;
+  font-size: clamp(18px, 1.9vw, 27px);
+  line-height: 1.1;
+}
+
+.portfolio__intro-text {
+  margin-top: 8px;
+  font-size: 15px;
+  color: var(--muted);
+}
+
+/* Grade 2 colunas do Figma (783×479, espaço 74) */
+.portfolio__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(20px, 3.9vw, 56px);
+  row-gap: clamp(44px, 4.5vw, 64px);
+  margin-top: clamp(40px, 4.5vw, 64px);
+}
+
+.project {
+  display: block;
+}
+
+.project__media {
+  position: relative;
+  aspect-ratio: 783 / 479;
+  background: var(--placeholder);
+  overflow: hidden;
+}
+
+.project__image,
+.project__hover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.project__image {
+  transition: transform 0.9s var(--ease);
+}
+
+.project__hover {
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+}
+
+.project__badge {
+  position: absolute;
+  right: 3%;
+  bottom: 3%;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+}
+
+.project__badge--behance {
+  width: 9%;
+  max-width: 52px;
+  aspect-ratio: 1;
+}
+
+.project__badge--site {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--red);
+  font-family: var(--font-cosmic);
+  font-size: 15px;
+  line-height: 1;
+}
+
+.project__badge-arrow {
+  width: 11px;
+  height: 11px;
+}
+
+.project--link:hover .project__hover,
+.project--link:focus-visible .project__hover,
+.project--link:hover .project__badge,
+.project--link:focus-visible .project__badge {
+  opacity: 1;
+}
+
+.project--link:hover .project__badge,
+.project--link:focus-visible .project__badge {
+  transform: none;
+}
+
+.project--link:hover .project__image {
+  transform: scale(1.03);
+}
+
+.project__caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 14px;
+  margin-top: 10px;
+}
+
+.project__name {
+  font-family: var(--font-pirso);
+  font-weight: 600;
+  font-size: clamp(22px, 2.3vw, 32px);
+  line-height: 1.2;
+}
+
+.project__tags {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-cosmic);
+  font-size: clamp(14px, 1.3vw, 18px);
+  line-height: 1.2;
+}
+
+.project__dot {
+  width: 12px;
+  height: 12px;
+}
+
+.project__description {
+  max-width: 520px;
+  margin-top: 6px;
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.portfolio__more {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(56px, 6vw, 80px);
+}
+
+@media (max-width: 860px) {
+  .portfolio__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .portfolio__intro {
+    text-align: left;
+  }
+
+  .portfolio__grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* no celular não há hover: o selo (Behance / Ver site) fica sempre visível */
+  .project__badge {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Página /portfolio */
+.portfolio-page {
+  padding-top: calc(var(--section-y) + 40px);
+}

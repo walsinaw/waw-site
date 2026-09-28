@@ -1,0 +1,218 @@
+.solutions {
+  border-top: 1px solid var(--line);
+}
+
+.solutions__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+.solutions__intro {
+  margin-top: 30px;
+  max-width: 600px;
+  text-align: right;
+}
+
+.solutions__intro-title {
+  font-family: var(--font-pirso);
+  font-weight: 600;
+  font-size: clamp(18px, 1.9vw, 27px);
+  line-height: 1.1;
+}
+
+.solutions__intro-text {
+  margin-top: 4px;
+  font-family: var(--font-cosmic);
+  font-size: clamp(13px, 1.1vw, 16px);
+  line-height: 1.15;
+}
+
+/* Cards: proporção 412×752 do Figma */
+.solutions__cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(28px, 4.4vw, 60px);
+  max-width: 1020px;
+  margin: clamp(40px, 4vw, 56px) auto 0;
+  padding-left: 26px;
+}
+
+.service {
+  position: relative;
+  display: block;
+  padding-top: 52px;
+}
+
+.service__number {
+  position: absolute;
+  z-index: 2;
+  left: -26px;
+  top: 0;
+  font-family: var(--font-pirso);
+  font-weight: 600;
+  font-size: 90px;
+  line-height: 1.215;
+  opacity: 0.05;
+  pointer-events: none;
+  transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
+}
+
+.service__shadow {
+  position: absolute;
+  left: 7px;
+  top: 52px;
+  right: -7px;
+  bottom: 0;
+  border-radius: 11px;
+  background: var(--red-shadow);
+  opacity: 0;
+  transition: opacity 0.45s var(--ease);
+}
+
+.service__card {
+  position: relative;
+  z-index: 1;
+  aspect-ratio: 412 / 752;
+  padding: 50px 16px 0;
+  border-radius: 11px;
+  background: var(--red);
+  font-family: var(--font-cosmic);
+  line-height: 1.1;
+  transition: transform 0.45s var(--ease);
+}
+
+/* Hover dos frames solucoes.design/web/ads */
+.service:hover .service__card,
+.service:focus-visible .service__card,
+.service:hover .service__number,
+.service:focus-visible .service__number {
+  transform: translate(-5px, -13px);
+}
+
+.service:hover .service__number,
+.service:focus-visible .service__number {
+  opacity: 0.61;
+}
+
+.service:hover .service__shadow,
+.service:focus-visible .service__shadow {
+  opacity: 1;
+}
+
+.service__label {
+  font-size: 11px;
+}
+
+.service__title {
+  margin-top: 31px;
+  font-size: 25px;
+  line-height: 1.1;
+}
+
+.service__description {
+  min-height: 58px;
+  margin-top: 9px;
+  font-size: 12.5px;
+}
+
+.service__items {
+  margin-top: 31px;
+}
+
+.service__item {
+  position: relative;
+  height: 22px;
+  padding-left: 21px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.service__check {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 15px;
+  height: 12px;
+}
+
+.service__go {
+  position: absolute;
+  right: 11px;
+  bottom: 11px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg);
+}
+
+.service__go-arrow {
+  width: 26px;
+  height: 26px;
+  transition: translate 0.3s var(--ease);
+}
+
+.service:hover .service__go-arrow {
+  translate: 3px 0;
+}
+
+.solutions__cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: clamp(56px, 6vw, 80px);
+  text-align: center;
+}
+
+.solutions__cta-title {
+  font-family: var(--font-pirso);
+  font-weight: 600;
+  font-size: clamp(22px, 2vw, 28px);
+  line-height: 1.2;
+}
+
+.solutions__cta-text {
+  margin: 6px 0 28px;
+  font-family: var(--font-cosmic);
+  font-size: clamp(15px, 1.2vw, 17px);
+}
+
+/* Entre tablet e desktop pequeno o card fica estreito: deixa a altura livre */
+@media (max-width: 1180px) {
+  .service__card {
+    aspect-ratio: auto;
+    padding-bottom: 70px;
+  }
+
+  .service__item {
+    height: auto;
+    padding-block: 2px;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 860px) {
+  .solutions__header {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .solutions__intro {
+    margin-top: 0;
+    text-align: left;
+  }
+
+  .solutions__cards {
+    grid-template-columns: 1fr;
+    max-width: 440px;
+    margin-inline: 0;
+    padding-left: 18px;
+  }
+
+  .service__number {
+    left: -18px;
+  }
+}

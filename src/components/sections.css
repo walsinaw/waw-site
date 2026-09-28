@@ -1,0 +1,231 @@
+/* ---------- Sobre ---------- */
+
+.intro__text {
+  margin-top: 8px;
+}
+
+/* ---------- Tudo conectado (única seção clara, para dar respiro) ---------- */
+
+.connected {
+  background: var(--paper);
+  color: var(--ink);
+  --muted: rgba(26, 26, 26, 0.62);
+  --line: rgba(26, 26, 26, 0.16);
+}
+
+.connected__statements {
+  margin-top: 48px;
+  border-top: 1px solid var(--line);
+}
+
+.connected__statements li {
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-cosmic);
+  font-size: clamp(20px, 2vw, 28px);
+  line-height: 1.2;
+}
+
+.connected__note {
+  margin-top: 36px;
+  font-size: clamp(16px, 1.25vw, 18px);
+  color: var(--muted);
+}
+
+.connected__equation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.28em;
+  margin-top: clamp(56px, 7vw, 96px);
+  font-family: var(--font-pirso);
+  font-weight: 600;
+  font-size: clamp(34px, 5.6vw, 88px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.connected__plus {
+  color: var(--red-bright);
+  font-weight: 600;
+}
+
+.connected__closing {
+  margin-top: clamp(36px, 4vw, 56px);
+  font-family: var(--font-cosmic);
+  font-size: clamp(20px, 2vw, 28px);
+  line-height: 1.2;
+}
+
+.connected__closing b {
+  font-family: var(--font-pirso);
+  font-weight: 600;
+  color: var(--red);
+}
+
+/* ---------- Por que WAW ---------- */
+
+.reasons__list {
+  margin-top: clamp(48px, 6vw, 80px);
+}
+
+.reasons__item {
+  display: grid;
+  /* mesmas colunas do título da seção (.split) */
+  grid-template-columns: minmax(0, 3fr) minmax(0, 8fr);
+  column-gap: 32px;
+  align-items: baseline;
+  padding: 28px 0;
+  border-top: 1px solid var(--line);
+  transition: color 0.3s;
+}
+
+.reasons__item:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.reasons__number {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+  transition: color 0.3s;
+}
+
+.reasons__item:hover .reasons__number {
+  color: var(--red-bright);
+}
+
+.reasons__body {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 5fr);
+  column-gap: 32px;
+  align-items: baseline;
+}
+
+.reasons__title {
+  font-family: var(--font-cosmic);
+  font-size: clamp(22px, 2.1vw, 30px);
+  line-height: 1.15;
+}
+
+.reasons__text {
+  max-width: 520px;
+  color: var(--muted);
+}
+
+/* ---------- Processo ---------- */
+
+.process {
+  padding-top: 0;
+}
+
+.process__steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: clamp(48px, 6vw, 80px);
+}
+
+.process__step {
+  min-height: 250px;
+  padding: 28px 28px 40px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.process__step + .process__step {
+  border-left: 1px solid var(--line);
+}
+
+.process__step:first-child {
+  padding-left: 0;
+}
+
+.process__number {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: var(--red-bright);
+}
+
+.process__title {
+  margin-top: 40px;
+  font-family: var(--font-pirso);
+  font-weight: 600;
+  font-size: clamp(24px, 2.2vw, 32px);
+  line-height: 1.1;
+}
+
+.process__text {
+  margin-top: 14px;
+  font-size: 15px;
+  color: var(--muted);
+}
+
+/* ---------- Fechamento (bloco vermelho) ---------- */
+
+.closing {
+  padding-block: var(--section-y) clamp(56px, 6vw, 88px);
+  background: var(--red);
+  overflow: hidden;
+}
+
+.closing .eyebrow::before {
+  color: var(--white);
+}
+
+.closing__text {
+  max-width: 520px;
+  margin-top: 24px;
+  font-size: clamp(16px, 1.25vw, 18px);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.closing__waw {
+  margin-top: clamp(24px, 3vw, 40px);
+  margin-left: -0.04em;
+  font-family: var(--font-pirso);
+  font-weight: 600;
+  font-size: clamp(120px, 27vw, 400px);
+  line-height: 0.8;
+  letter-spacing: -0.03em;
+}
+
+.closing__action {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+@media (max-width: 860px) {
+  .reasons__item,
+  .reasons__body {
+    grid-template-columns: 1fr;
+    row-gap: 10px;
+  }
+
+  .process__steps {
+    grid-template-columns: 1fr;
+  }
+
+  .process__step,
+  .process__step:first-child {
+    min-height: 0;
+    padding: 24px 0 28px;
+    border-bottom: none;
+  }
+
+  .process__step + .process__step {
+    border-left: none;
+  }
+
+  .process__step:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .process__title {
+    margin-top: 16px;
+  }
+
+  .closing__action {
+    justify-content: flex-start;
+  }
+}
