@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { signIn } from '../lib/api';
 import Logo from '../components/Logo';
+import './admin.css';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -22,15 +23,17 @@ export default function Login() {
   };
 
   return (
-    <div className="admin admin--center">
-      <form className="admin-card admin-login" onSubmit={handleSubmit}>
-        <Logo variant="waw" className="admin-login__logo" />
-        <h1 className="admin-login__title">Painel WAW</h1>
-        <label className="admin-field">
+    <div className="admin-center admin-center--red">
+      <form className="login" onSubmit={handleSubmit}>
+        <Logo variant="waw" className="login__logo" />
+        <h1 className="login__title">
+          Painel <em>WAW</em>
+        </h1>
+        <label className="input">
           <span>E-mail</span>
           <input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </label>
-        <label className="admin-field">
+        <label className="input">
           <span>Senha</span>
           <input
             type="password"
@@ -41,7 +44,7 @@ export default function Login() {
           />
         </label>
         {error && <p className="admin-error">{error}</p>}
-        <button type="submit" className="admin-button admin-button--primary" disabled={loading}>
+        <button type="submit" className="btn btn--red btn--block" disabled={loading}>
           {loading ? 'Entrando…' : 'Entrar'}
         </button>
       </form>

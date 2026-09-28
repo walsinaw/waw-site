@@ -1,21 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { listClients, saveClient } from '../lib/api';
+import { listClients } from '../lib/api';
 import { clientStatuses, statusLabels, type Client, type ClientStatus } from '../lib/types';
 import ClientForm from './ClientForm';
-
-const money = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
-const date = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' });
-
-/** Link do WhatsApp: adiciona o 55 do Brasil quando o número vem só com DDD. */
-function whatsappLink(value: string) {
-  const digits = value.replace(/\D/g, '');
-  return `https://wa.me/${digits.length > 11 ? digits : `55${digits}`}`;
-}
+import Filters from './Filters';
+import { money, shortDate, whatsappLink } from './format';
 
 export default function ClientsAdmin() {
   const [clients, setClients] = useState<Client[] | null>(null);
   const [editing, setEditing] = useState<Client | 'new' | null>(null);
   const [status, setStatus] = useState<ClientStatus | 'todos'>('todos');
+  const [origin, setOrigin] = useState('todos');
   const [search, setSearch] = useState('');
   const [error, setError] = useState('');
 
@@ -31,154 +25,115 @@ export default function ClientsAdmin() {
     load();
   }, [load]);
 
-  const counts = useMemo(() => {
-    const result = Object.fromEntries(clientStatuses.map((s) => [s, 0])) as Record<ClientStatus, number>;
-    clients?.forEach((c) => (result[c.status] += 1));
-    return result;
-  }, [clients]);
-
-  const activeValue = useMemo(
-    () => clients?.filter((c) => c.status === 'ativo').reduce((sum, c) => sum + (c.value ?? 0), 0) ?? 0,
-    [clients],
-  );
-
   const visible = useMemo(() => {
     const term = search.trim().toLowerCase();
     return (clients ?? []).filter(
       (c) =>
         (status === 'todos' || c.status === status) &&
+        (origin === 'todos' || c.source === origin) &&
         (!term || [c.name, c.company, c.city, c.email, c.whatsapp].some((v) => v.toLowerCase().includes(term))),
     );
-  }, [clients, status, search]);
+  }, [clients, status, origin, search]);
 
-  const changeStatus = async (client: Client, next: ClientStatus) => {
-    setError('');
-    const { id, created_at: _createdAt, ...input } = client;
-    try {
-      await saveClient({ ...input, status: next }, id);
-      await load();
-    } catch (err) {
-      setError((err as Error).message);
-    }
-  };
+  const leads = clients?.filter((c) => c.status === 'lead').length ?? 0;
 
   return (
     <section>
-      <div className="admin-head">
+      <div className="page-head">
         <div>
-          <h1 className="admin-title">Clientes</h1>
-          <p className="admin-muted">
-            Quem preenche o formulário do site aparece aqui como <strong>Lead</strong>.
-            {activeValue > 0 && <> Em andamento: {money.format(activeValue)}.</>}
+          <h1 className="page-title">Clientes</h1>
+          <p className="page-subtitle">
+            {clients
+              ? `${clients.length} no total · ${leads} ${leads === 1 ? 'lead novo' : 'leads novos'}`
+              : 'Visão total dos clientes'}
           </p>
         </div>
-        <button type="button" className="admin-button admin-button--primary" onClick={() => setEditing('new')}>
-          + Novo cliente
-        </button>
-      </div>
-
-      <div className="admin-filters">
-        <div className="admin-chips" role="tablist" aria-label="Filtrar por status">
-          <button
-            type="button"
-            className={status === 'todos' ? 'is-active' : ''}
-            onClick={() => setStatus('todos')}
-          >
-            Todos <span>{clients?.length ?? 0}</span>
+        <div className="page-actions">
+          <button type="button" className="btn btn--red" onClick={() => setEditing('new')}>
+            Cadastrar Cliente
           </button>
-          {clientStatuses.map((s) => (
-            <button
-              key={s}
-              type="button"
-              className={`${status === s ? 'is-active' : ''} status--${s}`}
-              onClick={() => setStatus(s)}
-            >
-              {statusLabels[s]} <span>{counts[s]}</span>
-            </button>
-          ))}
+          <Filters
+            filters={[
+              {
+                label: 'Status',
+                value: status,
+                onChange: (value) => setStatus(value as ClientStatus | 'todos'),
+                options: [['todos', 'Todos'], ...clientStatuses.map((s): [string, string] => [s, statusLabels[s]])],
+              },
+              {
+                label: 'Origem',
+                value: origin,
+                onChange: setOrigin,
+                options: [
+                  ['todos', 'Todos'],
+                  ['site', 'Formulário do site'],
+                  ['manual', 'Cadastro manual'],
+                ],
+              },
+            ]}
+          >
+            <input
+              className="filters__search"
+              type="search"
+              placeholder="Buscar…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              aria-label="Buscar cliente"
+            />
+          </Filters>
         </div>
-        <input
-          className="admin-search"
-          type="search"
-          placeholder="Buscar nome, empresa, cidade…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
       </div>
 
       {error && <p className="admin-error">{error}</p>}
 
-      {clients === null ? (
-        <p className="admin-muted">Carregando…</p>
-      ) : visible.length === 0 ? (
-        <p className="admin-empty">
-          {clients.length === 0 ? 'Nenhum cliente ainda. Os pedidos do site vão aparecer aqui.' : 'Nada encontrado.'}
-        </p>
-      ) : (
-        <div className="admin-table-wrap">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Cliente</th>
-                <th>Contato</th>
-                <th>Serviços</th>
-                <th>Status</th>
-                <th className="admin-table__num">Valor</th>
-                <th>Entrada</th>
-              </tr>
-            </thead>
-            <tbody>
-              {visible.map((client) => (
-                <tr key={client.id} onClick={() => setEditing(client)}>
-                  <td>
-                    <strong>{client.name}</strong>
-                    <span className="admin-muted">
-                      {[client.company, client.city].filter(Boolean).join(' · ') || '—'}
-                    </span>
-                  </td>
-                  <td onClick={(e) => e.stopPropagation()}>
-                    {client.whatsapp && (
-                      <a
-                        className="admin-link"
-                        href={whatsappLink(client.whatsapp)}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {client.whatsapp}
-                      </a>
-                    )}
-                    {client.email && (
-                      <a className="admin-link admin-muted" href={`mailto:${client.email}`}>
-                        {client.email}
-                      </a>
-                    )}
-                  </td>
-                  <td>{client.services.join(', ') || '—'}</td>
-                  <td onClick={(e) => e.stopPropagation()}>
-                    <select
-                      className={`admin-status status--${client.status}`}
-                      value={client.status}
-                      onChange={(e) => changeStatus(client, e.target.value as ClientStatus)}
-                      aria-label={`Status de ${client.name}`}
+      <div className="panel">
+        {clients === null ? (
+          <p className="panel__empty">Carregando…</p>
+        ) : visible.length === 0 ? (
+          <p className="panel__empty">
+            {clients.length === 0 ? 'Nenhum cliente ainda. Os pedidos do site vão aparecer aqui.' : 'Nada encontrado.'}
+          </p>
+        ) : (
+          <ul className="cards">
+            {visible.map((client) => (
+              <li key={client.id} className={`card card--${client.status}`}>
+                <span className="card__tags card__tags--top">
+                  <span className="tag">{statusLabels[client.status]}</span>
+                  {client.source === 'site' && <span className="tag tag--dark">via site</span>}
+                </span>
+                <h3 className="card__title">{client.name}</h3>
+                <p className="card__meta">{[client.company, client.city].filter(Boolean).join(' · ') || '—'}</p>
+                <p className="card__text">
+                  {client.services.length > 0 && <strong>{client.services.join(', ')}. </strong>}
+                  {client.notes || 'Sem anotações.'}
+                </p>
+                <div className="card__footer">
+                  <span className="card__info">
+                    {client.value != null ? money.format(client.value) : shortDate.format(new Date(client.created_at))}
+                  </span>
+                  {client.whatsapp && (
+                    <a
+                      href={whatsappLink(client.whatsapp)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="card__icon"
+                      aria-label={`WhatsApp de ${client.name}`}
+                      title={client.whatsapp}
                     >
-                      {clientStatuses.map((s) => (
-                        <option key={s} value={s}>
-                          {statusLabels[s]}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td className="admin-table__num">{client.value != null ? money.format(client.value) : '—'}</td>
-                  <td>
-                    {date.format(new Date(client.created_at))}
-                    {client.source === 'site' && <span className="admin-pill">site</span>}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+                      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z" />
+                      </svg>
+                    </a>
+                  )}
+                  <button type="button" className="btn btn--dark btn--sm" onClick={() => setEditing(client)}>
+                    Editar
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
       {editing && (
         <ClientForm

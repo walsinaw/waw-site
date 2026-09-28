@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react';
-import { saveProject, uploadCover } from '../lib/api';
+import { deleteProject, saveProject, uploadCover } from '../lib/api';
 import type { LinkType, Project, ProjectInput } from '../lib/types';
-import Drawer from './Drawer';
+import Modal from './Modal';
 
 interface ProjectFormProps {
   project: Project | null;
@@ -10,10 +10,10 @@ interface ProjectFormProps {
   onSaved: () => void;
 }
 
-const linkOptions: { value: LinkType; label: string; hint: string }[] = [
-  { value: 'behance', label: 'Behance', hint: 'Abre o case no Behance' },
-  { value: 'site', label: 'Site', hint: 'Abre o site que vocês fizeram' },
-  { value: 'none', label: 'Sem link', hint: 'Só mostra a imagem' },
+const linkOptions: { value: LinkType; label: string }[] = [
+  { value: 'behance', label: 'Behance' },
+  { value: 'site', label: 'Site do cliente' },
+  { value: 'none', label: 'Sem link' },
 ];
 
 export default function ProjectForm({ project, nextPosition, onClose, onSaved }: ProjectFormProps) {
@@ -52,9 +52,9 @@ export default function ProjectForm({ project, nextPosition, onClose, onSaved }:
     }
   };
 
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault();
+  const save = async (overrides: Partial<ProjectInput> = {}) => {
     setError('');
+    if (!values.title.trim()) return setError('Dê um nome para o projeto.');
 
     let linkUrl = values.link_url?.trim() || null;
     if (values.link_type !== 'none') {
@@ -73,6 +73,7 @@ export default function ProjectForm({ project, nextPosition, onClose, onSaved }:
           categories: values.categories.trim(),
           description: values.description.trim(),
           link_url: linkUrl,
+          ...overrides,
         },
         project?.id,
       );
@@ -83,108 +84,140 @@ export default function ProjectForm({ project, nextPosition, onClose, onSaved }:
     }
   };
 
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    save();
+  };
+
+  const handleDelete = async () => {
+    if (!project || !window.confirm(`Excluir o projeto "${project.title}"? Isso não pode ser desfeito.`)) return;
+    try {
+      await deleteProject(project.id);
+      onSaved();
+    } catch (err) {
+      setError((err as Error).message);
+    }
+  };
+
   return (
-    <Drawer title={project ? 'Editar projeto' : 'Novo projeto'} onClose={onClose}>
-      <form className="admin-form" onSubmit={handleSubmit}>
-        <div className="admin-field">
-          <span>Capa</span>
-          <label className="admin-upload">
-            {values.cover_url ? (
-              <img src={values.cover_url} alt="" />
-            ) : (
-              <span className="admin-muted">{uploading ? 'Enviando…' : 'Clique para escolher uma imagem (JPG, PNG ou WEBP)'}</span>
-            )}
+    <Modal title={project ? 'Editar' : 'Cadastrar'} highlight={project ? 'Projeto' : 'Novo Projeto'} onClose={onClose}>
+      <form className="form" onSubmit={handleSubmit} noValidate>
+        <div className="form__grid">
+          <label className="input">
+            <span>
+              Nome do projeto <b>*</b>
+            </span>
             <input
-              type="file"
-              accept="image/jpeg,image/png,image/webp,image/gif"
-              onChange={(e) => handleFile(e.target.files?.[0])}
+              value={values.title}
+              onChange={(e) => set('title', e.target.value)}
+              placeholder="Ex.: Dandala Sousa"
+              maxLength={120}
+              required
             />
           </label>
-          <small className="admin-muted">Formato ideal: 1566 × 958 px (proporção dos cards do site).</small>
-          {values.cover_url && (
-            <button type="button" className="admin-link admin-link--danger" onClick={() => set('cover_url', null)}>
-              Remover imagem
-            </button>
-          )}
-        </div>
 
-        <label className="admin-field">
-          <span>Nome do projeto *</span>
-          <input value={values.title} onChange={(e) => set('title', e.target.value)} required maxLength={120} />
-        </label>
-
-        <label className="admin-field">
-          <span>Especialidades</span>
-          <input
-            value={values.categories}
-            onChange={(e) => set('categories', e.target.value)}
-            placeholder="Landing Page · Desenvolvimento Web · UX/UI"
-          />
-        </label>
-
-        <label className="admin-field">
-          <span>Descrição curta</span>
-          <textarea
-            rows={3}
-            value={values.description}
-            onChange={(e) => set('description', e.target.value)}
-            maxLength={220}
-            placeholder="Uma frase sobre o desafio e a solução."
-          />
-        </label>
-
-        <fieldset className="admin-field">
-          <legend>Ao clicar no projeto</legend>
-          <div className="admin-segmented">
-            {linkOptions.map((option) => (
-              <label key={option.value} className={values.link_type === option.value ? 'is-active' : ''}>
-                <input
-                  type="radio"
-                  name="link_type"
-                  value={option.value}
-                  checked={values.link_type === option.value}
-                  onChange={() => set('link_type', option.value)}
-                />
-                <strong>{option.label}</strong>
-                <small>{option.hint}</small>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-
-        {values.link_type !== 'none' && (
-          <label className="admin-field">
-            <span>{values.link_type === 'behance' ? 'Link do Behance' : 'Endereço do site'}</span>
+          <label className="input">
+            <span>Especialidades</span>
             <input
-              value={values.link_url ?? ''}
-              onChange={(e) => set('link_url', e.target.value)}
-              placeholder={values.link_type === 'behance' ? 'https://www.behance.net/gallery/…' : 'https://…'}
+              value={values.categories}
+              onChange={(e) => set('categories', e.target.value)}
+              placeholder="Landing Page · Web · UX/UI"
             />
           </label>
-        )}
 
-        <div className="admin-row">
-          <label className="admin-switch">
-            <input type="checkbox" checked={values.published} onChange={(e) => set('published', e.target.checked)} />
-            <span>Publicado</span>
-          </label>
-          <label className="admin-switch">
-            <input type="checkbox" checked={values.featured} onChange={(e) => set('featured', e.target.checked)} />
+          <label className="input">
             <span>Mostrar na home</span>
+            <select value={values.featured ? 'sim' : 'nao'} onChange={(e) => set('featured', e.target.value === 'sim')}>
+              <option value="sim">Sim</option>
+              <option value="nao">Não (só em /portfolio)</option>
+            </select>
+          </label>
+
+          <label className="input">
+            <span>Ao clicar, abre</span>
+            <select value={values.link_type} onChange={(e) => set('link_type', e.target.value as LinkType)}>
+              {linkOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="input input--wide">
+            <span>{values.link_type === 'behance' ? 'Link do Behance' : values.link_type === 'site' ? 'Endereço do site' : 'Link'}</span>
+            <input
+              value={values.link_type === 'none' ? '' : values.link_url ?? ''}
+              onChange={(e) => set('link_url', e.target.value)}
+              placeholder={
+                values.link_type === 'behance'
+                  ? 'https://www.behance.net/gallery/…'
+                  : values.link_type === 'site'
+                    ? 'https://site-do-cliente.com.br'
+                    : 'Sem link: o card não leva para lugar nenhum'
+              }
+              disabled={values.link_type === 'none'}
+            />
+          </label>
+
+          <div className="input">
+            <span>Capa</span>
+            <label className={`upload${values.cover_url ? ' upload--filled' : ''}`}>
+              {values.cover_url ? (
+                <img src={values.cover_url} alt="" />
+              ) : (
+                <span>{uploading ? 'Enviando…' : 'Clique para escolher a imagem'}</span>
+              )}
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                onChange={(e) => handleFile(e.target.files?.[0])}
+              />
+            </label>
+            <small className="input__hint">
+              Ideal 1566 × 958 px.{' '}
+              {values.cover_url && (
+                <button type="button" className="text-btn" onClick={() => set('cover_url', null)}>
+                  Remover
+                </button>
+              )}
+            </small>
+          </div>
+
+          <label className="input input--wide">
+            <span>Descrição</span>
+            <textarea
+              value={values.description}
+              onChange={(e) => set('description', e.target.value)}
+              maxLength={220}
+              placeholder="Uma frase sobre o desafio e a solução."
+            />
           </label>
         </div>
 
         {error && <p className="admin-error">{error}</p>}
 
-        <div className="admin-form__footer">
-          <button type="button" className="admin-button" onClick={onClose}>
-            Cancelar
-          </button>
-          <button type="submit" className="admin-button admin-button--primary" disabled={saving || uploading}>
-            {saving ? 'Salvando…' : 'Salvar projeto'}
+        <div className="form__footer">
+          {project && (
+            <>
+              <button type="button" className="text-btn text-btn--danger" onClick={handleDelete}>
+                Excluir
+              </button>
+              <button
+                type="button"
+                className="btn btn--ghost"
+                disabled={saving || uploading}
+                onClick={() => save({ published: !project.published })}
+              >
+                {project.published ? 'Desativar' : 'Reativar'}
+              </button>
+            </>
+          )}
+          <button type="submit" className="btn btn--red" disabled={saving || uploading}>
+            {saving ? 'Salvando…' : project ? 'Salvar' : 'Publicar'}
           </button>
         </div>
       </form>
-    </Drawer>
+    </Modal>
   );
 }

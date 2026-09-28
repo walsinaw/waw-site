@@ -1,13 +1,16 @@
-import { useCallback, useEffect, useState } from 'react';
-import { deleteProject, listProjects, reorderProjects, saveProject } from '../lib/api';
-import type { Project } from '../lib/types';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { listProjects, reorderProjects } from '../lib/api';
+import type { LinkType, Project } from '../lib/types';
 import ProjectForm from './ProjectForm';
+import Filters from './Filters';
 
-const linkLabels = { behance: 'Behance', site: 'Site', none: 'Sem link' };
+const linkLabels: Record<LinkType, string> = { behance: 'Behance', site: 'Site', none: 'Sem link' };
 
 export default function ProjectsAdmin() {
   const [projects, setProjects] = useState<Project[] | null>(null);
   const [editing, setEditing] = useState<Project | 'new' | null>(null);
+  const [status, setStatus] = useState('todos');
+  const [link, setLink] = useState('todos');
   const [error, setError] = useState('');
 
   const load = useCallback(async () => {
@@ -22,112 +25,127 @@ export default function ProjectsAdmin() {
     load();
   }, [load]);
 
-  const run = async (action: () => Promise<unknown>) => {
-    setError('');
-    try {
-      await action();
-      await load();
-    } catch (err) {
-      setError((err as Error).message);
-    }
-  };
+  const filtered = status !== 'todos' || link !== 'todos';
+  const visible = useMemo(
+    () =>
+      (projects ?? []).filter(
+        (p) =>
+          (status === 'todos' ||
+            (status === 'publicado' && p.published) ||
+            (status === 'home' && p.published && p.featured) ||
+            (status === 'rascunho' && !p.published)) &&
+          (link === 'todos' || p.link_type === link),
+      ),
+    [projects, status, link],
+  );
 
-  const toggle = (project: Project, key: 'published' | 'featured') => {
-    const { id, created_at: _createdAt, ...input } = project;
-    return run(() => saveProject({ ...input, [key]: !project[key] }, id));
-  };
-
-  const move = (index: number, direction: -1 | 1) => {
+  // A ordem dos cards é a ordem do site; as setas trocam o projeto de lugar.
+  const move = async (project: Project, direction: -1 | 1) => {
     if (!projects) return;
+    const index = projects.findIndex((p) => p.id === project.id);
     const target = index + direction;
     if (target < 0 || target >= projects.length) return;
     const ordered = [...projects];
     [ordered[index], ordered[target]] = [ordered[target], ordered[index]];
     setProjects(ordered);
-    return run(() => reorderProjects(ordered));
+    try {
+      await reorderProjects(ordered);
+    } catch (err) {
+      setError((err as Error).message);
+      load();
+    }
   };
 
-  const remove = (project: Project) => {
-    if (!window.confirm(`Apagar o projeto "${project.title}"? Isso não pode ser desfeito.`)) return;
-    return run(() => deleteProject(project.id));
-  };
+  const published = projects?.filter((p) => p.published).length ?? 0;
 
   return (
     <section>
-      <div className="admin-head">
+      <div className="page-head">
         <div>
-          <h1 className="admin-title">Portfólio</h1>
-          <p className="admin-muted">
-            A ordem aqui é a ordem do site. A home mostra até 6 projetos marcados como “Na home”.
+          <h1 className="page-title">Portfólio</h1>
+          <p className="page-subtitle">
+            {projects ? `${published} publicados · a ordem aqui é a ordem do site` : 'Visão total dos projetos'}
           </p>
         </div>
-        <button type="button" className="admin-button admin-button--primary" onClick={() => setEditing('new')}>
-          + Novo projeto
-        </button>
+        <div className="page-actions">
+          <button type="button" className="btn btn--red" onClick={() => setEditing('new')}>
+            Cadastrar Projeto
+          </button>
+          <Filters
+            filters={[
+              {
+                label: 'Status',
+                value: status,
+                onChange: setStatus,
+                options: [
+                  ['todos', 'Todos'],
+                  ['publicado', 'Publicados'],
+                  ['home', 'Na home'],
+                  ['rascunho', 'Desativados'],
+                ],
+              },
+              {
+                label: 'Link',
+                value: link,
+                onChange: setLink,
+                options: [['todos', 'Todos'], ...Object.entries(linkLabels)],
+              },
+            ]}
+          />
+        </div>
       </div>
 
       {error && <p className="admin-error">{error}</p>}
 
-      {projects === null ? (
-        <p className="admin-muted">Carregando…</p>
-      ) : projects.length === 0 ? (
-        <p className="admin-empty">Nenhum projeto ainda. Clique em “Novo projeto”.</p>
-      ) : (
-        <ul className="admin-projects">
-          {projects.map((project, index) => (
-            <li key={project.id} className={`admin-project${project.published ? '' : ' admin-project--draft'}`}>
-              <div className="admin-project__order">
-                <button type="button" aria-label="Subir" onClick={() => move(index, -1)} disabled={index === 0}>
-                  ↑
-                </button>
-                <button
-                  type="button"
-                  aria-label="Descer"
-                  onClick={() => move(index, 1)}
-                  disabled={index === projects.length - 1}
-                >
-                  ↓
-                </button>
-              </div>
-
-              <div className="admin-project__thumb">
-                {project.cover_url && <img src={project.cover_url} alt="" />}
-              </div>
-
-              <div className="admin-project__info">
-                <strong>{project.title}</strong>
-                <span className="admin-muted">{project.categories || '—'}</span>
-                <span className="admin-pill">
-                  {linkLabels[project.link_type]}
-                  {project.link_url && project.link_type !== 'none' && (
-                    <a href={project.link_url} target="_blank" rel="noreferrer" className="admin-pill__link">
-                      ↗
-                    </a>
+      <div className="panel">
+        {projects === null ? (
+          <p className="panel__empty">Carregando…</p>
+        ) : visible.length === 0 ? (
+          <p className="panel__empty">
+            {projects.length === 0 ? 'Nenhum projeto ainda. Clique em “Cadastrar Projeto”.' : 'Nenhum projeto com esses filtros.'}
+          </p>
+        ) : (
+          <ul className="cards">
+            {visible.map((project) => (
+              <li key={project.id} className={`card${project.published ? '' : ' card--off'}`}>
+                <div className="card__cover">
+                  {project.cover_url ? <img src={project.cover_url} alt="" /> : <span>Sem capa</span>}
+                  <span className="card__tags">
+                    {!project.published && <span className="tag tag--dark">Desativado</span>}
+                    {project.published && project.featured && <span className="tag">Na home</span>}
+                  </span>
+                </div>
+                <h3 className="card__title">{project.title}</h3>
+                <p className="card__meta">{project.categories || 'Sem especialidades'}</p>
+                <p className="card__text">{project.description || 'Sem descrição.'}</p>
+                <div className="card__footer">
+                  <span className="card__info">
+                    {linkLabels[project.link_type]}
+                    {project.link_url && project.link_type !== 'none' && (
+                      <a href={project.link_url} target="_blank" rel="noreferrer" aria-label="Abrir link">
+                        ↗
+                      </a>
+                    )}
+                  </span>
+                  {!filtered && (
+                    <span className="card__order">
+                      <button type="button" aria-label="Mover para trás" onClick={() => move(project, -1)}>
+                        ←
+                      </button>
+                      <button type="button" aria-label="Mover para frente" onClick={() => move(project, 1)}>
+                        →
+                      </button>
+                    </span>
                   )}
-                </span>
-              </div>
-
-              <label className="admin-switch">
-                <input type="checkbox" checked={project.published} onChange={() => toggle(project, 'published')} />
-                <span>Publicado</span>
-              </label>
-              <label className="admin-switch">
-                <input type="checkbox" checked={project.featured} onChange={() => toggle(project, 'featured')} />
-                <span>Na home</span>
-              </label>
-
-              <div className="admin-project__actions">
-                <button type="button" className="admin-link" onClick={() => setEditing(project)}>
-                  Editar
-                </button>
-                <button type="button" className="admin-link admin-link--danger" onClick={() => remove(project)}>
-                  Apagar
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+                  <button type="button" className="btn btn--dark btn--sm" onClick={() => setEditing(project)}>
+                    Editar
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
       {editing && (
         <ProjectForm
