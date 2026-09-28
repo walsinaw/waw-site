@@ -3,6 +3,7 @@ import { contact, services, type ServiceId } from '../data/content';
 import whatsappIcon from '../assets/whatsapp.svg';
 import instagramIcon from '../assets/instagram.svg';
 import { createLead } from '../lib/api';
+import Arrow from './Arrow';
 import './Contact.css';
 
 interface ContactProps {
@@ -96,27 +97,38 @@ export default function Contact({ selectedServices, onChangeServices }: ContactP
 
   return (
     <section className="section contact" id="contato">
-      <div className="container">
-        <h2>
-          <span className="figma-title__label">WAW Studio</span>
-          <span className="figma-title__line">ENTRE EM CONTATO</span>
-        </h2>
-        <p className="contact__lead">Precisa que sua empresa tenha um UAU? Vem conversar com a gente!</p>
+      <div className="container contact__layout">
+        <div className="contact__copy">
+          <h2>
+            <span className="figma-title__label">WAW Studio</span>
+            <span className="figma-title__line">ENTRE EM CONTATO</span>
+          </h2>
+          <p className="contact__lead">Precisa que sua empresa tenha um UAU? Vem conversar com a gente!</p>
+          <p className="contact__text">
+            Conta um pouco do seu projeto que a gente responde pelo WhatsApp, sem enrolação.
+          </p>
 
-        <div className="contact__channels">
-          <a
-            className="contact__channel"
-            href={`https://wa.me/${contact.whatsappNumber}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <img src={whatsappIcon} alt="WhatsApp" className="contact__icon" />
-            <span className="contact__phone">{contact.whatsappDisplay}</span>
-          </a>
-          <a className="contact__channel" href={contact.instagramUrl} target="_blank" rel="noreferrer">
-            <img src={instagramIcon} alt="Instagram" className="contact__icon" />
-            {contact.instagramHandle}
-          </a>
+          <div className="contact__channels">
+            <a
+              className="contact__channel"
+              href={`https://wa.me/${contact.whatsappNumber}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img src={whatsappIcon} alt="" className="contact__icon" />
+              <span>
+                <span className="contact__channel-label">WhatsApp</span>
+                <span className="contact__channel-value">{contact.whatsappDisplay}</span>
+              </span>
+            </a>
+            <a className="contact__channel" href={contact.instagramUrl} target="_blank" rel="noreferrer">
+              <img src={instagramIcon} alt="" className="contact__icon" />
+              <span>
+                <span className="contact__channel-label">Instagram</span>
+                <span className="contact__channel-value">{contact.instagramHandle}</span>
+              </span>
+            </a>
+          </div>
         </div>
 
         <form className="contact__form" onSubmit={handleSubmit} noValidate>
@@ -154,6 +166,7 @@ export default function Contact({ selectedServices, onChangeServices }: ContactP
                       aria-pressed={active}
                       onClick={() => toggleService(service.id)}
                     >
+                      <span className="option__check" aria-hidden="true" />
                       <span className="option__label">{service.label}</span>
                       <span className="option__title">{service.title}</span>
                     </button>
@@ -176,12 +189,13 @@ export default function Contact({ selectedServices, onChangeServices }: ContactP
 
           <div className="contact__submit">
             <button type="submit" className="pill pill--red contact__submit-button">
-              Enviar
+              Enviar pelo WhatsApp
+              <Arrow variant="small" direction="right" className="pill__arrow" />
             </button>
             <p className="contact__note" role="status">
               {sent
                 ? 'Abrimos o WhatsApp com a sua mensagem. É só enviar!'
-                : 'Ao enviar, abrimos o WhatsApp com a sua mensagem pronta.'}
+                : 'Sua mensagem já vai pronta no WhatsApp.'}
             </p>
           </div>
         </form>

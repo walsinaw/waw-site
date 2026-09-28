@@ -94,20 +94,55 @@
   height: 11px;
 }
 
-.project--link:hover .project__hover,
-.project--link:focus-visible .project__hover,
-.project--link:hover .project__badge,
-.project--link:focus-visible .project__badge {
+.project__overlay-tags {
+  position: absolute;
+  left: 3%;
+  right: 30%;
+  bottom: 4%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+}
+
+.project__overlay-tags span {
+  padding: 7px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.12);
+  font-family: var(--font-cosmic);
+  font-size: clamp(12px, 1vw, 15px);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.project:hover .project__hover,
+.project:focus-visible .project__hover,
+.project:hover .project__badge,
+.project:focus-visible .project__badge,
+.project:hover .project__overlay-tags,
+.project:focus-visible .project__overlay-tags {
   opacity: 1;
 }
 
-.project--link:hover .project__badge,
-.project--link:focus-visible .project__badge {
+.project:hover .project__badge,
+.project:focus-visible .project__badge,
+.project:hover .project__overlay-tags,
+.project:focus-visible .project__overlay-tags {
   transform: none;
 }
 
-.project--link:hover .project__image {
+.project:hover .project__image {
   transform: scale(1.03);
+}
+
+/* Sem mouse (celular) não há hover: as soluções ficam só na legenda */
+@media (hover: none) {
+  .project__overlay-tags {
+    display: none;
+  }
 }
 
 .project__caption {
@@ -171,6 +206,11 @@
   .project__badge {
     opacity: 1;
     transform: none;
+  }
+
+  .project__badge--site {
+    padding: 8px 12px;
+    font-size: 13px;
   }
 }
 

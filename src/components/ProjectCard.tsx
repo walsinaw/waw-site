@@ -13,19 +13,24 @@ export default function ProjectCard({ project }: { project: Project }) {
     <>
       <div className="project__media">
         {project.cover_url && <img src={project.cover_url} alt="" className="project__image" loading="lazy" />}
-        {href && (
-          <>
-            <img src={hoverGradient} alt="" className="project__hover" />
-            {project.link_type === 'behance' ? (
-              <img src={behance} alt="" className="project__badge project__badge--behance" />
-            ) : (
-              <span className="project__badge project__badge--site">
-                Ver site
-                <Arrow variant="small" direction="up-right" className="project__badge-arrow" />
-              </span>
-            )}
-          </>
+        {/* Sombra do Figma no hover, com as soluções no canto inferior esquerdo */}
+        <img src={hoverGradient} alt="" className="project__hover" />
+        {project.categories && (
+          <p className="project__overlay-tags">
+            {project.categories.split('·').map((tag) => (
+              <span key={tag}>{tag.trim()}</span>
+            ))}
+          </p>
         )}
+        {href &&
+          (project.link_type === 'behance' ? (
+            <img src={behance} alt="" className="project__badge project__badge--behance" />
+          ) : (
+            <span className="project__badge project__badge--site">
+              Ver site
+              <Arrow variant="small" direction="up-right" className="project__badge-arrow" />
+            </span>
+          ))}
       </div>
       <div className="project__caption">
         <h3 className="project__name">{project.title}</h3>

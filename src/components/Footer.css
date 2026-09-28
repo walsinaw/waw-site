@@ -32,10 +32,31 @@
   color: var(--muted);
 }
 
-.footer__services {
-  max-width: 220px;
-  font-size: 14px;
-  line-height: 1.8;
+.footer__socials {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.footer__social {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  transition: background-color 0.25s, border-color 0.25s, transform 0.25s var(--ease);
+}
+
+.footer__social svg {
+  width: 18px;
+  height: 18px;
+}
+
+.footer__social:hover {
+  border-color: var(--red);
+  background: var(--red);
+  transform: translateY(-3px);
 }
 
 .footer__list li + li {
