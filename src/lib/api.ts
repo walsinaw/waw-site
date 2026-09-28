@@ -324,20 +324,23 @@ export async function getMyAccess(userId: string): Promise<Access | null> {
   };
 }
 
+const notPublished =
+  'A função "admin-users" ainda não está publicada no Supabase (Edge Functions). Veja o passo "Acessos" no README.';
+
 /** Chama a Edge Function "admin-users" (a única que pode criar logins). */
 async function usersFunction<T>(body: Record<string, unknown>): Promise<T> {
   const { data, error } = await supabase!.functions.invoke('admin-users', { body });
   if (error) {
-    // A função devolve { error: "mensagem" }; tenta mostrar essa mensagem.
-    const context = (error as { context?: Response }).context;
-    const message = await context
-      ?.json()
-      .then((b: { error?: string }) => b.error)
-      .catch(() => undefined);
-    if (message) throw new Error(message);
-    if (/Failed to send|not found|404/i.test(error.message)) {
-      throw new Error('A função "admin-users" ainda não foi publicada no Supabase. Veja o README (passo Acessos).');
+    // Quando a função responde, "context" é a resposta HTTP com { error: "mensagem" }.
+    // Quando nem chega nela (não publicada, sem internet), "context" é outra coisa.
+    const context = (error as { context?: unknown }).context;
+    if (context instanceof Response) {
+      const body = await context.json().catch(() => null);
+      if (context.status === 404 && body?.code === 'NOT_FOUND') throw new Error(notPublished);
+      if (body?.error) throw new Error(body.error);
+      if (body?.message) throw new Error(body.message);
     }
+    if (/Failed to send|not found|404/i.test(error.message)) throw new Error(notPublished);
     throw new Error(error.message);
   }
   return data as T;
