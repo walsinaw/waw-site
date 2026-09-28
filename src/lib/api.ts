@@ -1,3 +1,4 @@
+import { prepareCover } from './image';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import type { Client, ClientInput, LeadInput, Project, ProjectInput } from './types';
 import { seedProjects } from './seed';
@@ -38,7 +39,7 @@ function writeLocal<T>(key: string, value: T) {
 
 const nextId = (items: { id: number }[]) => items.reduce((max, item) => Math.max(max, item.id), 0) + 1;
 
-function fileToDataUrl(file: File) {
+function fileToDataUrl(file: Blob) {
   return new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result as string);
@@ -113,15 +114,11 @@ export async function reorderProjects(ordered: Project[]) {
 }
 
 export async function uploadCover(file: File): Promise<string> {
-  if (!supabase) {
-    if (file.size > 1.5 * 1024 * 1024) {
-      throw new Error('No modo demonstração use imagens de até 1,5 MB (no Supabase o limite é 8 MB).');
-    }
-    return fileToDataUrl(file);
-  }
-  const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
-  const path = `${crypto.randomUUID()}.${extension}`;
-  unwrap(await supabase.storage.from('portfolio').upload(path, file, { contentType: file.type }));
+  // Sem limite de tamanho: a imagem é recortada, reduzida e comprimida antes de subir.
+  const cover = await prepareCover(file);
+  if (!supabase) return fileToDataUrl(cover);
+  const path = `${crypto.randomUUID()}.webp`;
+  unwrap(await supabase.storage.from('portfolio').upload(path, cover, { contentType: 'image/webp' }));
   return supabase.storage.from('portfolio').getPublicUrl(path).data.publicUrl;
 }
 

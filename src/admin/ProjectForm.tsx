@@ -166,16 +166,16 @@ export default function ProjectForm({ project, nextPosition, onClose, onSaved }:
               {values.cover_url ? (
                 <img src={values.cover_url} alt="" />
               ) : (
-                <span>{uploading ? 'Enviando…' : 'Clique para escolher a imagem'}</span>
+                <span>{uploading ? 'Ajustando e enviando…' : 'Clique para escolher a imagem'}</span>
               )}
               <input
                 type="file"
-                accept="image/jpeg,image/png,image/webp,image/gif"
+                accept="image/*"
                 onChange={(e) => handleFile(e.target.files?.[0])}
               />
             </label>
             <small className="input__hint">
-              Ideal 1566 × 958 px.{' '}
+              Qualquer tamanho: ajustamos sozinhos ao formato do card.{' '}
               {values.cover_url && (
                 <button type="button" className="text-btn" onClick={() => set('cover_url', null)}>
                   Remover
