@@ -1,10 +1,39 @@
-import heroBg from '../assets/hero-bg.png';
 import Arrow from './Arrow';
+import Grainient from './Grainient';
 import './Hero.css';
+
+// Quem pede menos movimento no sistema vê o gradiente parado.
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export default function Hero() {
   return (
-    <section className="hero" id="inicio" style={{ backgroundImage: `url(${heroBg})` }}>
+    <section className="hero" id="inicio">
+      <div className="hero__bg" aria-hidden="true">
+        <Grainient
+          color1="#b30208"
+          color2="#09040a"
+          color3="#d9d6cf"
+          timeSpeed={reducedMotion ? 0 : 0.25}
+          colorBalance={0.0}
+          warpStrength={1.0}
+          warpFrequency={5.0}
+          warpSpeed={2.0}
+          warpAmplitude={50.0}
+          blendAngle={0.0}
+          blendSoftness={0.05}
+          rotationAmount={500.0}
+          noiseScale={2.0}
+          grainAmount={0.1}
+          grainScale={2.0}
+          grainAnimated={false}
+          contrast={1.5}
+          gamma={1.0}
+          saturation={1.0}
+          centerX={0.0}
+          centerY={0.0}
+          zoom={0.9}
+        />
+      </div>
       <div className="hero__content container">
         <p className="hero__kicker">Seu studio de criatividade e crescimento digital.</p>
 

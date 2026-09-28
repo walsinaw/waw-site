@@ -2,12 +2,19 @@
   position: relative;
   display: flex;
   min-height: max(640px, 100svh);
-  background-color: #000;
-  background-size: cover;
-  background-position: center;
+  overflow: hidden;
+  /* aparece só se o navegador não tiver WebGL */
+  background: radial-gradient(120% 90% at 70% 30%, var(--red), #09040a 70%);
+}
+
+/* Fundo animado (Grainient) atrás do conteúdo */
+.hero__bg {
+  position: absolute;
+  inset: 0;
 }
 
 .hero__content {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -109,10 +116,6 @@
 }
 
 @media (max-width: 860px) {
-  .hero {
-    background-position: 40% center;
-  }
-
   /* "O EXTRAORDINÁRIO" sempre numa linha só */
   .hero__title {
     font-size: min(9.6vw, 56px);

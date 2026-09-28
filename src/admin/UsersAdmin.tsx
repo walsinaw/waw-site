@@ -3,7 +3,12 @@ import { listPanelUsers, listTeam, supabase, type TeamMemberWithPhoto } from '..
 import { areaLabels, roleLabels, type PanelUser } from '../lib/types';
 import UserForm from './UserForm';
 
-const lastAccess = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+const lastAccess = new Intl.DateTimeFormat('pt-BR', {
+  day: '2-digit',
+  month: 'short',
+  hour: '2-digit',
+  minute: '2-digit',
+});
 
 export default function UsersAdmin() {
   const [users, setUsers] = useState<PanelUser[] | null>(null);
@@ -29,9 +34,9 @@ export default function UsersAdmin() {
     supabase?.auth.getUser().then(({ data }) => setMyId(data.user?.id ?? null));
   }, [load]);
 
-  const memberName = useMemo(() => {
-    const names = new Map(team.map((m) => [m.id, m.name]));
-    return (id: number | null) => (id == null ? undefined : names.get(id));
+  const memberOf = useMemo(() => {
+    const members = new Map(team.map((m) => [m.id, m]));
+    return (id: number | null) => (id == null ? undefined : members.get(id));
   }, [team]);
 
   const admins = users?.filter((u) => u.role === 'admin').length ?? 0;
@@ -66,13 +71,17 @@ export default function UsersAdmin() {
             {users.map((user) => {
               const isMe = user.user_id === myId;
               const displayName = user.name || user.email.split('@')[0];
+              // Login vinculado a um funcionário: usa a foto cadastrada em Funcionários.
+              const member = memberOf(user.team_id);
               return (
                 <li
                   key={user.user_id}
                   className={`card card--person${user.active ? '' : ' card--off'}${user.role === 'admin' ? '' : ' card--team'}`}
                 >
                   <div className="person">
-                    <span className="person__photo">{displayName.charAt(0).toUpperCase()}</span>
+                    <span className="person__photo">
+                      {member?.photo_url ? <img src={member.photo_url} alt="" /> : displayName.charAt(0).toUpperCase()}
+                    </span>
                     <span>
                       <h3 className="card__title">
                         {displayName}
@@ -90,11 +99,11 @@ export default function UsersAdmin() {
                     {user.role === 'admin'
                       ? 'tudo, inclusive Acessos'
                       : user.permissions.map((p) => areaLabels[p]).join(', ') || 'nenhuma área'}
-                    {memberName(user.team_id) && (
+                    {member && (
                       <>
                         <br />
                         <strong>Funcionário: </strong>
-                        {memberName(user.team_id)}
+                        {member.name}
                       </>
                     )}
                   </p>

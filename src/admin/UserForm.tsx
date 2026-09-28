@@ -59,6 +59,8 @@ export default function UserForm({ user, isMe, team, onClose, onSaved }: UserFor
     if (member && !values.name.trim()) set('name', member.name);
   };
 
+  const linked = team.find((m) => m.id === values.team_id);
+
   const save = async (overrides: Partial<PanelUserInput> = {}) => {
     setError('');
     const next = { ...values, ...overrides, email: values.email.trim().toLowerCase(), name: values.name.trim() };
@@ -150,17 +152,24 @@ export default function UserForm({ user, isMe, team, onClose, onSaved }: UserFor
           </label>
           <label className="input">
             <span>Vincular a um funcionário</span>
-            <select
-              value={values.team_id ?? ''}
-              onChange={(e) => pickMember(e.target.value ? Number(e.target.value) : null)}
-            >
-              <option value="">Nenhum</option>
-              {team.map((member) => (
-                <option key={member.id} value={member.id}>
-                  {member.name}
-                </option>
-              ))}
-            </select>
+            <span className="linked-member">
+              {linked && (
+                <span className="person__photo person__photo--sm" aria-hidden="true">
+                  {linked.photo_url ? <img src={linked.photo_url} alt="" /> : linked.name.charAt(0).toUpperCase()}
+                </span>
+              )}
+              <select
+                value={values.team_id ?? ''}
+                onChange={(e) => pickMember(e.target.value ? Number(e.target.value) : null)}
+              >
+                <option value="">Nenhum</option>
+                {team.map((member) => (
+                  <option key={member.id} value={member.id}>
+                    {member.name}
+                  </option>
+                ))}
+              </select>
+            </span>
           </label>
 
           <div className="input input--full">
