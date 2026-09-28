@@ -39,9 +39,11 @@
   padding-left: 26px;
 }
 
+/* Os três cards sempre com a mesma altura (a sombra acompanha o card) */
 .service {
   position: relative;
-  display: block;
+  display: flex;
+  flex-direction: column;
   padding-top: 52px;
 }
 
@@ -74,6 +76,7 @@
 .service__card {
   position: relative;
   z-index: 1;
+  flex: 1;
   aspect-ratio: 412 / 752;
   padding: 50px 16px 0;
   border-radius: 11px;
