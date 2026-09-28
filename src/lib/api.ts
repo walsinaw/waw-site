@@ -189,7 +189,12 @@ export async function createLead(lead: LeadInput) {
 export async function signIn(email: string, password: string) {
   if (!supabase) return;
   const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) throw new Error('E-mail ou senha incorretos.');
+  if (!error) return;
+  if (error.code === 'email_not_confirmed') {
+    throw new Error('E-mail ainda não confirmado. No Supabase: Authentication → Users → confirme o usuário.');
+  }
+  if (error.code === 'invalid_credentials') throw new Error('E-mail ou senha incorretos.');
+  throw new Error(`Não foi possível entrar: ${error.message}`);
 }
 
 export async function signOut() {

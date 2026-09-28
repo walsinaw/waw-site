@@ -1,10 +1,10 @@
 -- WAW Studio — banco do site e do painel /admin
 -- Rode este arquivo inteiro no Supabase: Dashboard → SQL Editor → New query → colar → Run.
+-- Pode rodar de novo sem problema (não duplica nada).
+-- ANTES: crie seu usuário em Authentication → Users → Add user (com o e-mail do final deste arquivo).
 
 -- ---------------------------------------------------------------
 -- Admins: só quem estiver nesta tabela acessa o painel.
--- Depois de criar seu usuário em Authentication → Users, rode:
---   insert into public.admins (user_id) select id from auth.users where email = 'seu@email.com';
 -- ---------------------------------------------------------------
 create table if not exists public.admins (
   user_id uuid primary key references auth.users (id) on delete cascade,
@@ -29,6 +29,7 @@ revoke execute on function private.is_admin() from public, anon;
 grant usage on schema private to authenticated;
 grant execute on function private.is_admin() to authenticated;
 
+drop policy if exists "admins leem a própria linha" on public.admins;
 create policy "admins leem a própria linha" on public.admins
   for select to authenticated
   using (user_id = (select auth.uid()));
@@ -54,19 +55,33 @@ create index if not exists projects_order_idx on public.projects (published, pos
 
 alter table public.projects enable row level security;
 
-create policy "público vê projetos publicados" on public.projects
-  for select to anon, authenticated
+grant select on public.projects to anon;
+grant select, insert, update, delete on public.projects to authenticated;
+
+-- Visitante (anon) não pode chamar private.is_admin(): por isso a política dele é separada.
+drop policy if exists "público vê projetos publicados" on public.projects;
+drop policy if exists "visitante vê projetos publicados" on public.projects;
+create policy "visitante vê projetos publicados" on public.projects
+  for select to anon
+  using (published);
+
+drop policy if exists "logado vê publicados, admin vê todos" on public.projects;
+create policy "logado vê publicados, admin vê todos" on public.projects
+  for select to authenticated
   using (published or (select private.is_admin()));
 
+drop policy if exists "admin cria projetos" on public.projects;
 create policy "admin cria projetos" on public.projects
   for insert to authenticated
   with check ((select private.is_admin()));
 
+drop policy if exists "admin edita projetos" on public.projects;
 create policy "admin edita projetos" on public.projects
   for update to authenticated
   using ((select private.is_admin()))
   with check ((select private.is_admin()));
 
+drop policy if exists "admin apaga projetos" on public.projects;
 create policy "admin apaga projetos" on public.projects
   for delete to authenticated
   using ((select private.is_admin()));
@@ -96,7 +111,11 @@ create index if not exists clients_status_idx on public.clients (status, created
 
 alter table public.clients enable row level security;
 
+grant insert on public.clients to anon;
+grant select, insert, update, delete on public.clients to authenticated;
+
 -- O formulário do site pode só CRIAR leads (não lê nada).
+drop policy if exists "site cria leads" on public.clients;
 create policy "site cria leads" on public.clients
   for insert to anon, authenticated
   with check (
@@ -106,19 +125,23 @@ create policy "site cria leads" on public.clients
     and start_date is null
   );
 
+drop policy if exists "admin vê clientes" on public.clients;
 create policy "admin vê clientes" on public.clients
   for select to authenticated
   using ((select private.is_admin()));
 
+drop policy if exists "admin cria clientes" on public.clients;
 create policy "admin cria clientes" on public.clients
   for insert to authenticated
   with check ((select private.is_admin()));
 
+drop policy if exists "admin edita clientes" on public.clients;
 create policy "admin edita clientes" on public.clients
   for update to authenticated
   using ((select private.is_admin()))
   with check ((select private.is_admin()));
 
+drop policy if exists "admin apaga clientes" on public.clients;
 create policy "admin apaga clientes" on public.clients
   for delete to authenticated
   using ((select private.is_admin()));
@@ -130,14 +153,17 @@ insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_typ
 values ('portfolio', 'portfolio', true, 8388608, array['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
 on conflict (id) do nothing;
 
+drop policy if exists "admin envia imagens" on storage.objects;
 create policy "admin envia imagens" on storage.objects
   for insert to authenticated
   with check (bucket_id = 'portfolio' and (select private.is_admin()));
 
+drop policy if exists "admin substitui imagens" on storage.objects;
 create policy "admin substitui imagens" on storage.objects
   for update to authenticated
   using (bucket_id = 'portfolio' and (select private.is_admin()));
 
+drop policy if exists "admin apaga imagens" on storage.objects;
 create policy "admin apaga imagens" on storage.objects
   for delete to authenticated
   using (bucket_id = 'portfolio' and (select private.is_admin()));
@@ -156,3 +182,13 @@ select * from (values
   ('Marquesa', 'Design', '', 4)
 ) as seed (title, categories, description, position)
 where not exists (select 1 from public.projects);
+
+-- ---------------------------------------------------------------
+-- Libera você como admin (o usuário precisa já existir em Authentication → Users)
+-- ---------------------------------------------------------------
+insert into public.admins (user_id)
+select id from auth.users where email = 'juliawalsinaw@gmail.com'
+on conflict (user_id) do nothing;
+
+-- Confere: tem que aparecer 1 linha com o seu e-mail. Se vier vazio, crie o usuário e rode de novo.
+select u.email as admin from public.admins a join auth.users u on u.id = a.user_id;
