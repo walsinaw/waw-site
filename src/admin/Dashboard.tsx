@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { listClients, listProjects } from '../lib/api';
 import { clientStatuses, statusLabels, type Client, type Project } from '../lib/types';
 import { money, whatsappLink } from './format';
+import { clientCharges, dayMonth } from './charges';
 
 export default function Dashboard() {
   const [projects, setProjects] = useState<Project[] | null>(null);
@@ -22,8 +23,25 @@ export default function Dashboard() {
   const count = (status: Client['status']) => clients?.filter((c) => c.status === status).length ?? 0;
   // Soma das mensalidades dos clientes em andamento.
   const monthly =
-    clients?.filter((c) => c.status === 'ativo' && c.value_type === 'mensal').reduce((sum, c) => sum + (c.value ?? 0), 0) ?? 0;
+    clients
+      ?.filter((c) => c.status === 'ativo' && c.value_type === 'mensal')
+      .reduce((sum, c) => sum + (c.value ?? 0), 0) ?? 0;
   const leads = clients?.filter((c) => c.status === 'lead').slice(0, 5) ?? [];
+  // Tudo que ainda não foi pago: atrasados primeiro, depois pelo vencimento mais próximo.
+  const pending = (clients ?? [])
+    .flatMap((client) =>
+      clientCharges(client)
+        .filter((charge) => charge.state !== 'pago')
+        .map((charge) => ({ client, charge })),
+    )
+    .sort(
+      (a, b) =>
+        Number(b.charge.state === 'atrasado') - Number(a.charge.state === 'atrasado') ||
+        (a.charge.due ?? '9999').localeCompare(b.charge.due ?? '9999'),
+    );
+  const overdueTotal = pending
+    .filter((p) => p.charge.state === 'atrasado')
+    .reduce((sum, p) => sum + (p.charge.value || 0), 0);
 
   const stats = [
     { label: 'Novos leads', value: count('lead'), to: '/admin/clientes' },
@@ -73,7 +91,12 @@ export default function Dashboard() {
                           <small>{[lead.company, lead.city].filter(Boolean).join(' · ') || '—'}</small>
                         </span>
                         {lead.whatsapp && (
-                          <a href={whatsappLink(lead.whatsapp)} target="_blank" rel="noreferrer" className="btn btn--red btn--sm">
+                          <a
+                            href={whatsappLink(lead.whatsapp)}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="btn btn--red btn--sm"
+                          >
                             WhatsApp
                           </a>
                         )}
@@ -102,6 +125,42 @@ export default function Dashboard() {
                     );
                   })}
                 </ul>
+              </div>
+
+              <div className="dash-box dash-box--full">
+                <h2 className="dash-box__title">
+                  Pagamentos <em>pendentes</em>
+                </h2>
+                {pending.length === 0 ? (
+                  <p className="panel__empty">Nenhuma cobrança em aberto.</p>
+                ) : (
+                  <>
+                    {overdueTotal > 0 && <p className="dash-box__note">{money.format(overdueTotal)} em atraso</p>}
+                    <ul className="dash-list">
+                      {pending.slice(0, 8).map(({ client, charge }, index) => (
+                        <li key={`${client.id}-${index}`}>
+                          <span>
+                            <strong>{client.company || client.name}</strong>
+                            <small>{charge.description}</small>
+                          </span>
+                          <span className={`dash-due dash-due--${charge.state}`}>
+                            <strong>{money.format(charge.value || 0)}</strong>
+                            <small>
+                              {charge.due
+                                ? `${charge.state === 'atrasado' ? 'venceu' : 'vence'} ${dayMonth.format(new Date(charge.due))}`
+                                : 'sem vencimento'}
+                            </small>
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                    {pending.length > 8 && (
+                      <Link to="/admin/clientes" className="text-btn">
+                        Ver todos os {pending.length}
+                      </Link>
+                    )}
+                  </>
+                )}
               </div>
             </div>
           </>

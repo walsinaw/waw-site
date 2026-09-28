@@ -147,7 +147,7 @@ export default function AdminApp() {
 
       <div className="admin__body">
         <header className="topbar">
-          {isDemo && <span className="topbar__demo">Modo demonstração — salvo só neste navegador</span>}
+          {isDemo && <span className="topbar__demo">Modo demonstração: salvo só neste navegador</span>}
           <div className="topbar__user">
             <span className="topbar__avatar" aria-hidden="true">
               {name.charAt(0).toUpperCase()}

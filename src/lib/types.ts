@@ -54,10 +54,14 @@ export const statusLabels: Record<ClientStatus, string> = {
 
 export type ValueType = 'fixo' | 'mensal';
 
+/** Uma cobrança do cliente (valor do projeto, parcela, mensalidade ou extra). */
 export interface ExtraPayment {
   description: string;
   value: number;
+  /** Data limite de pagamento (vencimento) */
   date: string | null;
+  /** Quando o cliente pagou; vazio = em aberto */
+  paid_on?: string | null;
 }
 
 export interface Client {
@@ -74,8 +78,10 @@ export interface Client {
   status: ClientStatus;
   value: number | null;
   value_type: ValueType;
-  /** Cobranças à parte (ajustes, materiais extras…) */
+  /** Cobranças com vencimento e data de pagamento */
   extra_payments: ExtraPayment[];
+  /** Dia do mês em que vence a mensalidade (só para valor mensal) */
+  due_day: number | null;
   start_date: string | null;
   notes: string;
   source: 'site' | 'manual';

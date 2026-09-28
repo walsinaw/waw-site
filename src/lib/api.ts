@@ -147,6 +147,7 @@ const withClientDefaults = (client: Client): Client => ({
   document: client.document ?? '',
   value_type: client.value_type ?? 'fixo',
   extra_payments: client.extra_payments ?? [],
+  due_day: client.due_day ?? null,
 });
 
 export async function listClients(): Promise<Client[]> {
@@ -198,6 +199,7 @@ export async function createLead(lead: LeadInput) {
       value: null,
       value_type: 'fixo',
       extra_payments: [],
+      due_day: null,
       start_date: null,
       source: 'site',
     });

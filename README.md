@@ -44,6 +44,7 @@ ler/editar clientes e mexer no portfólio exige estar logado **e** estar na tabe
 
 1. `supabase/02-equipe-e-pagamentos.sql` — Instagram no portfólio, CPF/CNPJ e pagamentos dos clientes, aba Funcionários.
 2. `supabase/03-acessos-e-pagamentos-equipe.sql` — logins com permissões por área e pagamentos da equipe.
+3. `supabase/04-vencimentos-clientes.sql` — dia do vencimento da mensalidade dos clientes.
 
 ### Acessos (criar logins para outras pessoas)
 
