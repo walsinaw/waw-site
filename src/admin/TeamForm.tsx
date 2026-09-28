@@ -7,13 +7,18 @@ import {
   type Client,
   type ContractType,
   type TeamInput,
+  type TeamPayment,
 } from '../lib/types';
 import Modal from './Modal';
 import ChipPicker from './ChipPicker';
+import TeamPayments from './TeamPayments';
 
 interface TeamFormProps {
   member: TeamMemberWithPhoto | null;
   clients: Client[];
+  payments: TeamPayment[];
+  /** Recarrega a lista quando um pagamento é registrado/apagado (sem fechar a janela) */
+  onPaymentsChange: () => void;
   onClose: () => void;
   onSaved: () => void;
 }
@@ -38,7 +43,7 @@ const valueLabels: Record<ContractType, string> = {
 // Projetos em andamento aparecem primeiro na lista de vínculo.
 const statusOrder = { ativo: 0, proposta: 1, lead: 2, pausado: 3, concluido: 4 };
 
-export default function TeamForm({ member, clients, onClose, onSaved }: TeamFormProps) {
+export default function TeamForm({ member, clients, payments, onPaymentsChange, onClose, onSaved }: TeamFormProps) {
   const [values, setValues] = useState<TeamInput>(
     member ? (({ id: _id, created_at: _createdAt, photo_url: _photoUrl, ...rest }) => rest)(member) : empty,
   );
@@ -204,6 +209,19 @@ export default function TeamForm({ member, clients, onClose, onSaved }: TeamForm
               </div>
             )}
           </fieldset>
+
+          {member ? (
+            <TeamPayments
+              member={{ ...member, ...values }}
+              payments={payments}
+              clients={clients}
+              onChange={onPaymentsChange}
+            />
+          ) : (
+            <p className="input input--full input__hint">
+              Depois de cadastrar, abra a pessoa de novo para registrar os pagamentos.
+            </p>
+          )}
 
           <label className="input input--full">
             <span>Observações</span>

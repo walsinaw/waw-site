@@ -28,3 +28,10 @@ export function whatsappLink(value: string) {
   const digits = value.replace(/\D/g, '');
   return `https://wa.me/${digits.length > 11 ? digits : `55${digits}`}`;
 }
+
+/** Data de hoje no fuso local, no formato do <input type="date"> (AAAA-MM-DD). */
+export function localToday() {
+  const now = new Date();
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+  return now.toISOString().slice(0, 10);
+}

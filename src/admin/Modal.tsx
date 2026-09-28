@@ -7,10 +7,12 @@ interface ModalProps {
   highlight: string;
   onClose: () => void;
   children: ReactNode;
+  /** small: janelas curtas, como trocar senha */
+  size?: 'small';
 }
 
 // Janela centralizada usada nos cadastros e edições do painel.
-export default function Modal({ title, highlight, onClose, children }: ModalProps) {
+export default function Modal({ title, highlight, onClose, children, size }: ModalProps) {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => event.key === 'Escape' && onClose();
     window.addEventListener('keydown', onKey);
@@ -24,7 +26,7 @@ export default function Modal({ title, highlight, onClose, children }: ModalProp
   return (
     <div className="modal" role="dialog" aria-modal="true" aria-label={`${title} ${highlight}`}>
       <button type="button" className="modal__backdrop" aria-label="Fechar" onClick={onClose} />
-      <div className="modal__panel">
+      <div className={`modal__panel${size ? ` modal__panel--${size}` : ''}`}>
         <div className="modal__head">
           <h2 className="modal__title">
             {title} <em>{highlight}</em>

@@ -1,15 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { listClients, listTeam, type TeamMemberWithPhoto } from '../lib/api';
-import { contractLabels, specialties, type Client, type ContractType } from '../lib/types';
+import { listClients, listTeam, listTeamPayments, type TeamMemberWithPhoto } from '../lib/api';
+import { contractLabels, specialties, type Client, type ContractType, type TeamPayment } from '../lib/types';
 import TeamForm from './TeamForm';
 import Filters from './Filters';
 import { money, whatsappLink } from './format';
+import { monthLabel, paymentSummary } from './payments';
 
 const valueSuffix: Record<ContractType, string> = { fixo: '/mês', freelancer: '/projeto', avulso: '' };
 
 export default function TeamAdmin() {
   const [team, setTeam] = useState<TeamMemberWithPhoto[] | null>(null);
   const [clients, setClients] = useState<Client[]>([]);
+  const [payments, setPayments] = useState<TeamPayment[]>([]);
   const [editing, setEditing] = useState<TeamMemberWithPhoto | 'new' | null>(null);
   const [contract, setContract] = useState('todos');
   const [area, setArea] = useState('todos');
@@ -17,9 +19,10 @@ export default function TeamAdmin() {
 
   const load = useCallback(async () => {
     try {
-      const [members, allClients] = await Promise.all([listTeam(), listClients()]);
+      const [members, allClients, allPayments] = await Promise.all([listTeam(), listClients(), listTeamPayments()]);
       setTeam(members);
       setClients(allClients);
+      setPayments(allPayments);
     } catch (err) {
       setError((err as Error).message);
     }
@@ -44,13 +47,17 @@ export default function TeamAdmin() {
     [team, contract, area],
   );
 
+  const paidThisMonth = (team ?? []).reduce((sum, m) => sum + paymentSummary(m, payments).thisMonth, 0);
+
   return (
     <section>
       <div className="page-head">
         <div>
           <h1 className="page-title">Funcionários</h1>
           <p className="page-subtitle">
-            {team ? `${team.length} ${team.length === 1 ? 'pessoa' : 'pessoas'} na equipe` : 'Quem trabalha com a WAW'}
+            {team
+              ? `${team.length} ${team.length === 1 ? 'pessoa' : 'pessoas'} na equipe · ${money.format(paidThisMonth)} pagos em ${monthLabel().split('/')[0].toLowerCase()}`
+              : 'Quem trabalha com a WAW'}
           </p>
         </div>
         <div className="page-actions">
@@ -89,6 +96,7 @@ export default function TeamAdmin() {
           <ul className="cards">
             {visible.map((member) => {
               const projects = member.client_ids.map(clientName).filter(Boolean);
+              const paid = paymentSummary(member, payments);
               return (
                 <li key={member.id} className="card card--person">
                   <div className="person">
@@ -110,6 +118,11 @@ export default function TeamAdmin() {
                     ) : (
                       'Sem projetos vinculados.'
                     )}
+                  </p>
+                  <p className={`card__pay${member.contract_type === 'fixo' && !paid.currentMonthPaid ? ' card__pay--due' : ''}`}>
+                    {member.contract_type === 'fixo'
+                      ? `${monthLabel()}: ${paid.currentMonthPaid ? 'pago ✓' : 'pendente'}`
+                      : `Total pago: ${money.format(paid.total)}`}
                   </p>
                   <div className="card__footer">
                     <span className="card__info">
@@ -146,6 +159,8 @@ export default function TeamAdmin() {
         <TeamForm
           member={editing === 'new' ? null : editing}
           clients={clients}
+          payments={payments}
+          onPaymentsChange={load}
           onClose={() => setEditing(null)}
           onSaved={() => {
             setEditing(null);

@@ -1,5 +1,18 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import type { Client, ClientInput, LeadInput, Project, ProjectInput, TeamInput, TeamMember } from './types';
+import type {
+  Access,
+  Client,
+  ClientInput,
+  LeadInput,
+  PanelUser,
+  PanelUserInput,
+  Project,
+  ProjectInput,
+  TeamInput,
+  TeamMember,
+  TeamPayment,
+  TeamPaymentInput,
+} from './types';
 import { prepareCover, preparePhoto } from './image';
 import { seedProjects } from './seed';
 
@@ -20,6 +33,8 @@ export const isDemo = !supabase;
 const PROJECTS_KEY = 'waw-demo-projects';
 const CLIENTS_KEY = 'waw-demo-clients';
 const TEAM_KEY = 'waw-demo-team';
+const TEAM_PAYMENTS_KEY = 'waw-demo-team-payments';
+const USERS_KEY = 'waw-demo-users';
 
 function readLocal<T>(key: string, fallback: T): T {
   try {
@@ -254,6 +269,120 @@ export async function uploadTeamPhoto(file: File): Promise<{ path: string; url: 
   const path = `${crypto.randomUUID()}.webp`;
   unwrap(await supabase.storage.from('team').upload(path, photo, { contentType: 'image/webp' }));
   return { path, url: URL.createObjectURL(photo) };
+}
+
+// ---------------------------------------------------------------------------
+// Pagamentos da equipe
+// ---------------------------------------------------------------------------
+
+export async function listTeamPayments(): Promise<TeamPayment[]> {
+  if (!supabase) {
+    return readLocal<TeamPayment[]>(TEAM_PAYMENTS_KEY, []).sort((a, b) => b.paid_on.localeCompare(a.paid_on));
+  }
+  return unwrap(
+    await supabase.from('team_payments').select('*').order('paid_on', { ascending: false }).order('id', { ascending: false }),
+  );
+}
+
+export async function addTeamPayment(input: TeamPaymentInput): Promise<TeamPayment> {
+  if (!supabase) {
+    const all = readLocal<TeamPayment[]>(TEAM_PAYMENTS_KEY, []);
+    const saved = { ...input, id: nextId(all), created_at: new Date().toISOString() };
+    writeLocal(TEAM_PAYMENTS_KEY, [...all, saved]);
+    return saved;
+  }
+  return unwrap(await supabase.from('team_payments').insert(input).select().single());
+}
+
+export async function deleteTeamPayment(id: number) {
+  if (!supabase) {
+    writeLocal(TEAM_PAYMENTS_KEY, readLocal<TeamPayment[]>(TEAM_PAYMENTS_KEY, []).filter((p) => p.id !== id));
+    return;
+  }
+  unwrap(await supabase.from('team_payments').delete().eq('id', id));
+}
+
+// ---------------------------------------------------------------------------
+// Acessos (logins do painel)
+// ---------------------------------------------------------------------------
+
+/** O que o login atual pode ver. null = não tem acesso ao painel. */
+export async function getMyAccess(userId: string): Promise<Access | null> {
+  if (!supabase) return { name: 'Demo', role: 'admin', permissions: [], active: true };
+  const { data } = await supabase
+    .from('admins')
+    .select('name, role, permissions, active')
+    .eq('user_id', userId)
+    .maybeSingle();
+  if (!data) return null;
+  // Antes da atualização 03 a tabela só tinha user_id: quem estava nela era admin.
+  return {
+    name: data.name ?? '',
+    role: data.role ?? 'admin',
+    permissions: data.permissions ?? [],
+    active: data.active ?? true,
+  };
+}
+
+/** Chama a Edge Function "admin-users" (a única que pode criar logins). */
+async function usersFunction<T>(body: Record<string, unknown>): Promise<T> {
+  const { data, error } = await supabase!.functions.invoke('admin-users', { body });
+  if (error) {
+    // A função devolve { error: "mensagem" }; tenta mostrar essa mensagem.
+    const context = (error as { context?: Response }).context;
+    const message = await context
+      ?.json()
+      .then((b: { error?: string }) => b.error)
+      .catch(() => undefined);
+    if (message) throw new Error(message);
+    if (/Failed to send|not found|404/i.test(error.message)) {
+      throw new Error('A função "admin-users" ainda não foi publicada no Supabase. Veja o README (passo Acessos).');
+    }
+    throw new Error(error.message);
+  }
+  return data as T;
+}
+
+export async function listPanelUsers(): Promise<PanelUser[]> {
+  if (!supabase) return readLocal<PanelUser[]>(USERS_KEY, []);
+  return usersFunction<PanelUser[]>({ action: 'list' });
+}
+
+export async function savePanelUser(input: PanelUserInput, userId?: string) {
+  if (!supabase) {
+    const all = readLocal<PanelUser[]>(USERS_KEY, []);
+    const { password: _password, ...fields } = input;
+    if (userId) {
+      writeLocal(USERS_KEY, all.map((u) => (u.user_id === userId ? { ...u, ...fields, email: u.email } : u)));
+    } else {
+      if (all.some((u) => u.email === input.email)) throw new Error('Já existe um login com esse e-mail.');
+      writeLocal(USERS_KEY, [
+        ...all,
+        { ...fields, user_id: crypto.randomUUID(), last_sign_in_at: null, created_at: new Date().toISOString() },
+      ]);
+    }
+    return;
+  }
+  await usersFunction(userId ? { action: 'update', user_id: userId, ...input } : { action: 'create', ...input });
+}
+
+export async function deletePanelUser(userId: string) {
+  if (!supabase) {
+    writeLocal(USERS_KEY, readLocal<PanelUser[]>(USERS_KEY, []).filter((u) => u.user_id !== userId));
+    return;
+  }
+  await usersFunction({ action: 'delete', user_id: userId });
+}
+
+/** Cada pessoa pode trocar a própria senha. */
+export async function changeMyPassword(password: string) {
+  if (!supabase) return;
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) {
+    throw new Error(
+      error.code === 'same_password' ? 'A nova senha precisa ser diferente da atual.' : `Não foi possível trocar: ${error.message}`,
+    );
+  }
 }
 
 // ---------------------------------------------------------------------------

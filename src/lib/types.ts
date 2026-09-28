@@ -110,3 +110,66 @@ export interface TeamMember {
 }
 
 export type TeamInput = Omit<TeamMember, 'id' | 'created_at'>;
+
+export interface TeamPayment {
+  id: number;
+  member_id: number;
+  amount: number;
+  paid_on: string;
+  /** Ex.: "Setembro/2026" (fixo) ou o que foi pago (freelancer) */
+  reference: string;
+  /** Projeto (cliente) ao qual o pagamento se refere, no freelancer */
+  client_id: number | null;
+  notes: string;
+  created_at: string;
+}
+
+export type TeamPaymentInput = Omit<TeamPayment, 'id' | 'created_at'>;
+
+// ---------------------------------------------------------------------------
+// Acessos ao painel
+// ---------------------------------------------------------------------------
+
+/** Áreas do painel que um login "equipe" pode receber. A página de Acessos é só do admin. */
+export const areas = ['dashboard', 'portfolio', 'clientes', 'funcionarios'] as const;
+export type Area = (typeof areas)[number];
+
+export const areaLabels: Record<Area, string> = {
+  dashboard: 'Dashboard',
+  portfolio: 'Portfólio',
+  clientes: 'Clientes',
+  funcionarios: 'Funcionários',
+};
+
+export type Role = 'admin' | 'equipe';
+
+export const roleLabels: Record<Role, string> = {
+  admin: 'Administrador',
+  equipe: 'Equipe',
+};
+
+/** O que o login atual pode ver (linha dele na tabela admins). */
+export interface Access {
+  name: string;
+  role: Role;
+  permissions: Area[];
+  active: boolean;
+}
+
+export interface PanelUser extends Access {
+  user_id: string;
+  email: string;
+  team_id: number | null;
+  last_sign_in_at: string | null;
+  created_at: string;
+}
+
+export interface PanelUserInput {
+  email: string;
+  password: string;
+  name: string;
+  role: Role;
+  permissions: Area[];
+  team_id: number | null;
+  active: boolean;
+}

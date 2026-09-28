@@ -10,7 +10,7 @@ import {
 } from '../lib/types';
 import Modal from './Modal';
 import ChipPicker from './ChipPicker';
-import { formatDocument, money } from './format';
+import { formatDocument, localToday, money } from './format';
 
 interface ClientFormProps {
   client: Client | null;
@@ -35,8 +35,6 @@ const empty: ClientInput = {
   notes: '',
   source: 'manual',
 };
-
-const today = () => new Date().toISOString().slice(0, 10);
 
 export default function ClientForm({ client, onClose, onSaved }: ClientFormProps) {
   const [values, setValues] = useState<ClientInput>(
@@ -268,7 +266,7 @@ export default function ClientForm({ client, onClose, onSaved }: ClientFormProps
               type="button"
               className="add-btn"
               onClick={() =>
-                set('extra_payments', [...values.extra_payments, { description: '', value: 0, date: today() }])
+                set('extra_payments', [...values.extra_payments, { description: '', value: 0, date: localToday() }])
               }
             >
               + Adicionar pagamento

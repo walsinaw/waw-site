@@ -1056,6 +1056,190 @@
   border-radius: 50%;
 }
 
+/* ---------- Pagamentos da equipe ---------- */
+
+.team-pay__summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.team-pay__summary strong {
+  margin-left: 4px;
+  color: var(--white);
+}
+
+.team-pay__status {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(222, 4, 12, 0.2);
+  color: #ff8a8e;
+  font-weight: 700;
+}
+
+.team-pay__status.is-paid {
+  background: rgba(61, 220, 132, 0.15);
+  color: #3ddc84;
+}
+
+.team-pay__form {
+  display: grid;
+  grid-template-columns: 130px 150px minmax(0, 1fr) auto;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.team-pay__form--project {
+  grid-template-columns: 130px 150px minmax(0, 1fr) minmax(0, 1fr) auto;
+}
+
+.team-pay__form .btn {
+  height: 40px;
+}
+
+.team-pay__list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
+  border-top: 1px solid var(--line);
+}
+
+.team-pay__list li {
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr) auto 30px;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+}
+
+.team-pay__date {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.team-pay__ref {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.team-pay__list .payments__remove {
+  height: 28px;
+}
+
+.card__pay {
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.card__pay--due {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* ---------- Acessos ---------- */
+
+.card--team {
+  background: #3a0a0c;
+}
+
+.card__tags--inline {
+  position: static;
+}
+
+.card__me {
+  font-family: var(--font-inter);
+  font-weight: 500;
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.role-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.role-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  background: var(--admin-field);
+  text-align: left;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.role-option strong {
+  font-size: 14px;
+}
+
+.role-option small {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.role-option:hover:not(:disabled) {
+  border-color: var(--red-bright);
+}
+
+.role-option--active {
+  border-color: var(--red-bright);
+  background: rgba(179, 2, 8, 0.35);
+}
+
+.role-option:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.add-btn--inline {
+  flex: none;
+  height: 40px;
+  margin: 0;
+}
+
+.modal__panel--small {
+  width: min(480px, 100%);
+}
+
+.form__grid.form__grid--single {
+  grid-template-columns: 1fr;
+}
+
+.form__message {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.credentials {
+  margin-top: 16px;
+  padding: 16px;
+  overflow-x: auto;
+  border-radius: 10px;
+  background: var(--admin-field);
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.panel__empty--light {
+  color: rgba(26, 26, 26, 0.6);
+}
+
 /* ---------- Login / telas centrais ---------- */
 
 .admin-center {
@@ -1106,6 +1290,11 @@
 /* ---------- Responsivo ---------- */
 
 @media (max-width: 1100px) {
+  .team-pay__form,
+  .team-pay__form--project {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .form__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1189,6 +1378,15 @@
 }
 
 @media (max-width: 600px) {
+  .role-options {
+    grid-template-columns: 1fr;
+  }
+
+  .team-pay__list li {
+    grid-template-columns: 64px minmax(0, 1fr) auto 28px;
+    gap: 8px;
+  }
+
   .payments li {
     grid-template-columns: minmax(0, 1fr) 34px;
   }

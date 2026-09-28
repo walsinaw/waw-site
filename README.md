@@ -40,6 +40,30 @@ seu navegador) — bom para testar, não para usar de verdade.
 Segurança: visitantes do site só conseguem **ler projetos publicados** e **criar leads**;
 ler/editar clientes e mexer no portfólio exige estar logado **e** estar na tabela `admins`.
 
+### Atualizações do banco (rode na ordem, uma vez cada)
+
+1. `supabase/02-equipe-e-pagamentos.sql` — Instagram no portfólio, CPF/CNPJ e pagamentos dos clientes, aba Funcionários.
+2. `supabase/03-acessos-e-pagamentos-equipe.sql` — logins com permissões por área e pagamentos da equipe.
+
+### Acessos (criar logins para outras pessoas)
+
+Criar login precisa da chave secreta do Supabase, que **nunca** pode ir para o site. Por isso existe
+uma função que roda no servidor do Supabase e só atende administradores:
+
+1. No Supabase: **Edge Functions → Deploy a new function → Via Editor**.
+2. Nome da função: `admin-users` (exatamente assim).
+3. Apague o código de exemplo, cole todo o arquivo `supabase/functions/admin-users/index.ts` e clique em **Deploy**.
+4. Pronto: a página **Acessos** do painel já funciona.
+   Se aparecer "Invalid JWT", abra a função → **Details** → desligue **Enforce JWT verification** e salve
+   (a própria função já confere quem está logado e se é administrador).
+
+Tipos de login:
+- **Administrador:** vê tudo e pode criar/bloquear/excluir outros logins.
+- **Equipe:** vê só as áreas marcadas (Dashboard, Portfólio, Clientes, Funcionários). As regras do banco
+  garantem isso — mesmo mexendo no site, a pessoa não consegue ler o que não foi liberado.
+
+Cada pessoa pode trocar a própria senha em **Minha senha**, no topo do painel.
+
 ## Publicando
 
 Funciona na Vercel ou na Netlify (já têm a configuração para as rotas `/admin` e `/portfolio`:
