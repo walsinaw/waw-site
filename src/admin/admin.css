@@ -433,24 +433,39 @@
   gap: 24px;
 }
 
+/* Cards vermelhos, na paleta da WAW */
 .card {
   display: flex;
   flex-direction: column;
   padding: 18px;
-  border: 1px solid var(--admin-line);
   border-radius: 14px;
-  background: var(--admin-raised);
-  transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease), border-color 0.2s;
+  background: var(--red);
+  color: var(--white);
+  transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
 }
 
+/* mesmo hover dos cards de serviço do site */
 .card:hover {
-  border-color: rgba(222, 4, 12, 0.45);
-  transform: translateY(-4px);
+  transform: translate(-3px, -6px);
+  box-shadow: 3px 6px 0 var(--red-shadow);
+}
+
+.card--lead {
+  background: var(--red-bright);
+}
+
+.card--concluido,
+.card--pausado {
+  background: #333;
+}
+
+.card--concluido:hover,
+.card--pausado:hover {
+  box-shadow: 3px 6px 0 #111;
 }
 
 .card--off {
-  background: var(--admin-canvas);
-  border-style: dashed;
+  background: #4a0a0d;
 }
 
 .card--off .card__cover img {
@@ -458,23 +473,17 @@
   opacity: 0.5;
 }
 
-.card--off .card__title,
-.card--concluido .card__title,
-.card--pausado .card__title {
-  color: rgba(235, 234, 230, 0.7);
-}
-
 .card__cover {
   position: relative;
   display: grid;
   place-items: center;
   aspect-ratio: 16 / 10;
-  margin: -8px -8px 16px;
+  margin-bottom: 16px;
   overflow: hidden;
   border-radius: 9px;
-  background: var(--admin-raised-2);
+  background: rgba(0, 0, 0, 0.25);
   font-size: 12px;
-  color: var(--admin-muted);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .card__cover img {
@@ -511,33 +520,25 @@
   height: 24px;
   padding: 0 10px;
   border-radius: 999px;
-  background: rgba(222, 4, 12, 0.16);
-  color: #ff7b80;
+  background: var(--white);
+  color: var(--red);
   font-size: 11px;
   font-weight: 600;
   white-space: nowrap;
 }
 
-.card__cover .tag {
-  background: var(--red);
+.tag--dark {
+  background: rgba(0, 0, 0, 0.35);
   color: var(--white);
 }
 
-.tag--dark,
-.card__cover .tag--dark {
-  border: 1px solid var(--admin-line-strong);
-  background: rgba(20, 20, 20, 0.75);
-  color: var(--admin-muted);
-}
-
-/* Status dos clientes: um ponto de cor + nome */
+/* Status dos clientes: etiqueta branca com um ponto de cor */
 .tag--lead,
 .tag--proposta,
 .tag--ativo,
 .tag--concluido,
 .tag--pausado {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--admin-text);
+  color: var(--ink);
 }
 
 .tag--lead::before,
@@ -549,25 +550,19 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: currentColor;
+  background: #8a8a8a;
 }
 
-.tag--lead {
+.tag--lead::before {
   background: var(--red-bright);
-  color: var(--white);
 }
 
-.tag--proposta {
-  color: var(--admin-warn);
+.tag--proposta::before {
+  background: #e8960c;
 }
 
-.tag--ativo {
-  color: var(--admin-ok);
-}
-
-.tag--concluido,
-.tag--pausado {
-  color: var(--admin-muted);
+.tag--ativo::before {
+  background: #1fa45a;
 }
 
 .card__title {
@@ -575,13 +570,12 @@
   font-weight: 600;
   font-size: 22px;
   line-height: 1.1;
-  color: var(--white);
 }
 
 .card__meta {
   margin-top: 6px;
   font-size: 13px;
-  color: var(--admin-muted);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .card__text {
@@ -591,14 +585,13 @@
   overflow: hidden;
   font-size: 13px;
   line-height: 1.55;
-  color: rgba(235, 234, 230, 0.82);
+  color: rgba(255, 255, 255, 0.92);
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 4;
   line-clamp: 4;
 }
 
 .card__text strong {
-  color: var(--white);
   font-weight: 600;
 }
 
@@ -613,16 +606,15 @@
   margin-right: auto;
   font-size: 13px;
   font-weight: 600;
-  color: var(--admin-text);
 }
 
 .card__info a {
   margin-left: 6px;
-  color: var(--admin-muted);
+  opacity: 0.75;
 }
 
 .card__info a:hover {
-  color: var(--red-bright);
+  opacity: 1;
 }
 
 .card__order {
@@ -638,24 +630,28 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(0, 0, 0, 0.25);
   font-size: 13px;
-  color: var(--admin-text);
-  transition: background-color 0.2s, color 0.2s;
-}
-
-.card__order button:hover {
-  background: rgba(255, 255, 255, 0.14);
-}
-
-.card__icon:hover {
-  background: var(--red);
   color: var(--white);
+  transition: background-color 0.2s;
+}
+
+.card__order button:hover,
+.card__icon:hover {
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .card__icon svg {
   width: 15px;
   height: 15px;
+}
+
+.card .btn--dark {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.card .btn--dark:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.5);
 }
 
 /* ---------- Dashboard ---------- */
@@ -672,16 +668,15 @@
   gap: 10px;
   min-height: 140px;
   padding: 22px;
-  container-type: inline-size;
-  border: 1px solid var(--admin-line);
   border-radius: 14px;
-  background: var(--admin-raised);
-  transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease), border-color 0.2s;
+  background: var(--red);
+  container-type: inline-size;
+  transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
 }
 
 .stat:hover {
-  border-color: rgba(222, 4, 12, 0.45);
-  transform: translateY(-4px);
+  transform: translate(-3px, -6px);
+  box-shadow: 3px 6px 0 var(--red-shadow);
 }
 
 .stat__value {
@@ -699,12 +694,7 @@
   order: -1;
   font-size: 13px;
   font-weight: 500;
-  color: var(--admin-muted);
-}
-
-/* Novos leads em vermelho: é o número que pede ação */
-.stat:first-child .stat__value {
-  color: var(--red-bright);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .dash-grid {
@@ -1250,10 +1240,9 @@
   width: 64px;
   height: 64px;
   overflow: hidden;
-  border: 2px solid var(--red);
+  border: 2px solid rgba(255, 255, 255, 0.85);
   border-radius: 50%;
   background: var(--red-shadow);
-  box-shadow: 0 0 0 4px var(--admin-raised), 0 0 0 5px rgba(222, 4, 12, 0.35);
   font-family: var(--font-pirso);
   font-weight: 600;
   font-size: 26px;
@@ -1357,13 +1346,17 @@
   font-weight: 700;
 }
 
-/* Situação de pagamento do cliente no card */
+/* Situação de pagamento do cliente no card: etiqueta escura com ponto de cor */
 .card__pay--atrasado,
 .card__pay--aberto,
 .card__pay--em-dia {
-  display: flex;
+  display: inline-flex;
+  align-self: flex-start;
   align-items: center;
   gap: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.28);
   font-weight: 600;
 }
 
@@ -1378,16 +1371,18 @@
   background: currentColor;
 }
 
+/* Atrasado chama atenção: etiqueta branca */
 .card__pay--atrasado {
-  color: #ff7b80;
+  background: var(--white);
+  color: var(--red);
 }
 
-.card__pay--aberto {
-  color: var(--admin-warn);
+.card__pay--aberto::before {
+  background: var(--admin-warn);
 }
 
-.card__pay--em-dia {
-  color: var(--admin-ok);
+.card__pay--em-dia::before {
+  background: var(--admin-ok);
 }
 
 .card__pay--due {
@@ -1395,16 +1390,13 @@
   align-self: flex-start;
   padding: 3px 10px;
   border-radius: 999px;
-  background: rgba(222, 4, 12, 0.16);
-  color: #ff7b80;
+  background: rgba(0, 0, 0, 0.3);
 }
 
 /* ---------- Acessos ---------- */
 
-.card--team .person__photo {
-  border-color: var(--admin-line-strong);
-  background: var(--admin-raised-2);
-  box-shadow: none;
+.card--team {
+  background: #3a0a0c;
 }
 
 .card__tags--inline {
