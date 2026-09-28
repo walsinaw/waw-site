@@ -16,8 +16,7 @@ export const contact = {
   whatsappNumber: '5553981526416',
   instagramHandle: '@wawstudio.br',
   instagramUrl: 'https://www.instagram.com/wawstudio.br/',
-  // TODO: trocar pelo link real do perfil no Behance
-  behanceUrl: 'https://www.behance.net/',
+  behanceUrl: 'https://www.behance.net/walsinaw',
 };
 
 // "Nossas Soluções" — textos do Figma
