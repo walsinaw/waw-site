@@ -1,14 +1,10 @@
-import { services, type ServiceId } from '../data/content';
+import { services } from '../data/content';
 import checkIcon from '../assets/check.svg';
 import Arrow from './Arrow';
 import './Solutions.css';
 
-interface SolutionsProps {
-  onPickService: (id: ServiceId) => void;
-}
-
 // Seção "Nossas Soluções" do Figma (textos e hover iguais; tamanhos reduzidos).
-export default function Solutions({ onPickService }: SolutionsProps) {
+export default function Solutions() {
   return (
     <section className="section solutions" id="servicos">
       <div className="container">
@@ -33,10 +29,9 @@ export default function Solutions({ onPickService }: SolutionsProps) {
           {services.map((service) => (
             <a
               key={service.id}
-              href="#contato"
+              href={`/servicos/${service.id}`}
               className="service"
-              onClick={() => onPickService(service.id)}
-              aria-label={`${service.title} — pedir orçamento`}
+              aria-label={`${service.title} — conhecer`}
             >
               <span className="service__number" aria-hidden="true">
                 {service.number}

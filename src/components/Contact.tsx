@@ -154,7 +154,9 @@ export default function Contact({ selectedServices, onChangeServices }: ContactP
             ))}
 
             <fieldset className="field field--wide">
-              <legend className="field__label">O que você precisa?</legend>
+              <legend className="field__label">
+                O que você precisa? <small className="field__note">pode marcar mais de uma opção</small>
+              </legend>
               <div className="field__options">
                 {services.map((service) => {
                   const active = selectedServices.includes(service.id);

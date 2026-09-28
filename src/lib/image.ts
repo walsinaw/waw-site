@@ -1,7 +1,5 @@
-// Prepara a capa antes do upload: qualquer tamanho/formato vira uma imagem leve
-// no formato exato dos cards do portfólio (783 × 479, em 2x = 1566 × 958).
-const TARGET_WIDTH = 1566;
-const TARGET_HEIGHT = 958;
+// Prepara imagens antes do upload: qualquer tamanho/formato vira uma imagem leve
+// recortada no formato certo (capa do portfólio ou foto da equipe).
 const QUALITY = 0.86;
 
 function loadImage(file: File) {
@@ -20,10 +18,16 @@ function loadImage(file: File) {
   });
 }
 
-/** Recorta pelo centro na proporção do card, reduz para 1566 × 958 e comprime em WEBP. */
-export async function prepareCover(file: File): Promise<Blob> {
+/** Capa do portfólio: formato dos cards (783 × 479, em 2x = 1566 × 958). */
+export const prepareCover = (file: File) => prepareImage(file, 1566, 958);
+
+/** Foto da equipe: quadrada, 480 × 480. */
+export const preparePhoto = (file: File) => prepareImage(file, 480, 480);
+
+/** Recorta pelo centro na proporção pedida, reduz e comprime em WEBP. */
+async function prepareImage(file: File, targetWidth: number, targetHeight: number): Promise<Blob> {
   const image = await loadImage(file);
-  const targetRatio = TARGET_WIDTH / TARGET_HEIGHT;
+  const targetRatio = targetWidth / targetHeight;
   const sourceRatio = image.naturalWidth / image.naturalHeight;
 
   // Área da imagem original que cabe na proporção do card (mesmo efeito do object-fit: cover).
@@ -35,7 +39,7 @@ export async function prepareCover(file: File): Promise<Blob> {
   const sy = (image.naturalHeight - sh) / 2;
 
   // Nunca aumenta imagens pequenas (ficariam borradas); só reduz as grandes.
-  const scale = Math.min(1, TARGET_WIDTH / sw);
+  const scale = Math.min(1, targetWidth / sw);
   const canvas = document.createElement('canvas');
   canvas.width = Math.round(sw * scale);
   canvas.height = Math.round(sh * scale);

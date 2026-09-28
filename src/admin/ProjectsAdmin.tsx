@@ -4,7 +4,7 @@ import type { LinkType, Project } from '../lib/types';
 import ProjectForm from './ProjectForm';
 import Filters from './Filters';
 
-const linkLabels: Record<LinkType, string> = { behance: 'Behance', site: 'Site', none: 'Sem link' };
+const linkLabels: Record<LinkType, string> = { behance: 'Behance', site: 'Site', instagram: 'Instagram', none: 'Sem link' };
 
 export default function ProjectsAdmin() {
   const [projects, setProjects] = useState<Project[] | null>(null);

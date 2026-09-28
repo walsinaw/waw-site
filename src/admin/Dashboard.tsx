@@ -20,14 +20,16 @@ export default function Dashboard() {
 
   const loading = projects === null || clients === null;
   const count = (status: Client['status']) => clients?.filter((c) => c.status === status).length ?? 0;
-  const inProgress = clients?.filter((c) => c.status === 'ativo').reduce((sum, c) => sum + (c.value ?? 0), 0) ?? 0;
+  // Soma das mensalidades dos clientes em andamento.
+  const monthly =
+    clients?.filter((c) => c.status === 'ativo' && c.value_type === 'mensal').reduce((sum, c) => sum + (c.value ?? 0), 0) ?? 0;
   const leads = clients?.filter((c) => c.status === 'lead').slice(0, 5) ?? [];
 
   const stats = [
     { label: 'Novos leads', value: count('lead'), to: '/admin/clientes' },
     { label: 'Em andamento', value: count('ativo'), to: '/admin/clientes' },
     { label: 'Projetos publicados', value: projects?.filter((p) => p.published).length ?? 0, to: '/admin/portfolio' },
-    { label: 'Valor em andamento', value: money.format(inProgress), to: '/admin/clientes' },
+    { label: 'Recorrente por mês', value: money.format(monthly), to: '/admin/clientes' },
   ];
 
   return (

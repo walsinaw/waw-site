@@ -1,9 +1,16 @@
 import { useState, type FormEvent } from 'react';
 import { deleteClient, saveClient } from '../lib/api';
-import { clientStatuses, statusLabels, type Client, type ClientInput } from '../lib/types';
+import {
+  clientStatuses,
+  specialties,
+  statusLabels,
+  type Client,
+  type ClientInput,
+  type ExtraPayment,
+} from '../lib/types';
 import Modal from './Modal';
-
-const serviceOptions = ['Design', 'Web', 'Ads', 'Social Media', 'Audiovisual', 'Estratégia'];
+import ChipPicker from './ChipPicker';
+import { formatDocument, money } from './format';
 
 interface ClientFormProps {
   client: Client | null;
@@ -18,13 +25,18 @@ const empty: ClientInput = {
   whatsapp: '',
   email: '',
   instagram: '',
+  document: '',
   services: [],
   status: 'lead',
   value: null,
+  value_type: 'fixo',
+  extra_payments: [],
   start_date: null,
   notes: '',
   source: 'manual',
 };
+
+const today = () => new Date().toISOString().slice(0, 10);
 
 export default function ClientForm({ client, onClose, onSaved }: ClientFormProps) {
   const [values, setValues] = useState<ClientInput>(
@@ -36,18 +48,20 @@ export default function ClientForm({ client, onClose, onSaved }: ClientFormProps
   const set = <K extends keyof ClientInput>(key: K, value: ClientInput[K]) =>
     setValues((current) => ({ ...current, [key]: value }));
 
-  const toggleService = (service: string) =>
+  const setPayment = (index: number, patch: Partial<ExtraPayment>) =>
     set(
-      'services',
-      // Mantém serviços antigos que vieram do site (ex.: "DESIGN") ao marcar/desmarcar.
-      values.services.some((s) => s.toLowerCase() === service.toLowerCase())
-        ? values.services.filter((s) => s.toLowerCase() !== service.toLowerCase())
-        : [...values.services, service],
+      'extra_payments',
+      values.extra_payments.map((payment, i) => (i === index ? { ...payment, ...patch } : payment)),
     );
+
+  const extrasTotal = values.extra_payments.reduce((sum, p) => sum + (p.value || 0), 0);
 
   const save = async (overrides: Partial<ClientInput> = {}) => {
     setError('');
     if (!values.name.trim()) return setError('Coloque o nome do cliente.');
+    if (values.extra_payments.some((p) => !p.description.trim())) {
+      return setError('Descreva cada pagamento à parte (ou remova as linhas vazias).');
+    }
     setSaving(true);
     try {
       await saveClient({ ...values, name: values.name.trim(), ...overrides }, client?.id);
@@ -137,6 +151,15 @@ export default function ClientForm({ client, onClose, onSaved }: ClientFormProps
           </label>
 
           <label className="input">
+            <span>CPF ou CNPJ do responsável</span>
+            <input
+              value={values.document}
+              onChange={(e) => set('document', formatDocument(e.target.value))}
+              placeholder="000.000.000-00"
+              inputMode="numeric"
+            />
+          </label>
+          <label className="input">
             <span>Status</span>
             <select value={values.status} onChange={(e) => set('status', e.target.value as ClientInput['status'])}>
               {clientStatuses.map((s) => (
@@ -147,17 +170,6 @@ export default function ClientForm({ client, onClose, onSaved }: ClientFormProps
             </select>
           </label>
           <label className="input">
-            <span>Valor do projeto</span>
-            <input
-              type="number"
-              min="0"
-              step="0.01"
-              value={values.value ?? ''}
-              onChange={(e) => set('value', e.target.value === '' ? null : Number(e.target.value))}
-              placeholder="R$ 0,00"
-            />
-          </label>
-          <label className="input">
             <span>Data de início</span>
             <input
               type="date"
@@ -166,24 +178,106 @@ export default function ClientForm({ client, onClose, onSaved }: ClientFormProps
             />
           </label>
 
+          <div className="input input--wide">
+            <span>Valor do projeto</span>
+            <div className="value-field">
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                value={values.value ?? ''}
+                onChange={(e) => set('value', e.target.value === '' ? null : Number(e.target.value))}
+                placeholder="R$ 0,00"
+                aria-label="Valor do projeto"
+              />
+              <div className="segmented" role="radiogroup" aria-label="Tipo de pagamento">
+                {(
+                  [
+                    ['fixo', 'Pagamento fixo'],
+                    ['mensal', 'Valor mensal'],
+                  ] as const
+                ).map(([type, label]) => (
+                  <button
+                    key={type}
+                    type="button"
+                    role="radio"
+                    aria-checked={values.value_type === type}
+                    className={values.value_type === type ? 'is-active' : ''}
+                    onClick={() => set('value_type', type)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="input">
+            <span>Total com extras</span>
+            <p className="value-total">
+              {money.format((values.value ?? 0) + extrasTotal)}
+              {values.value_type === 'mensal' && <small> + mensalidade</small>}
+            </p>
+          </div>
+
+          <div className="input input--full">
+            <span>Pagamentos à parte</span>
+            <p className="input__hint">Ajustes, alterações ou materiais extras cobrados depois do valor combinado.</p>
+            {values.extra_payments.length > 0 && (
+              <ul className="payments">
+                {values.extra_payments.map((payment, index) => (
+                  <li key={index}>
+                    <input
+                      value={payment.description}
+                      onChange={(e) => setPayment(index, { description: e.target.value })}
+                      placeholder="Ex.: Ajuste no logotipo"
+                      aria-label="Descrição"
+                    />
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={payment.value || ''}
+                      onChange={(e) => setPayment(index, { value: Number(e.target.value) })}
+                      placeholder="R$ 0,00"
+                      aria-label="Valor"
+                    />
+                    <input
+                      type="date"
+                      value={payment.date ?? ''}
+                      onChange={(e) => setPayment(index, { date: e.target.value || null })}
+                      aria-label="Data"
+                    />
+                    <button
+                      type="button"
+                      className="payments__remove"
+                      aria-label="Remover pagamento"
+                      onClick={() =>
+                        set(
+                          'extra_payments',
+                          values.extra_payments.filter((_, i) => i !== index),
+                        )
+                      }
+                    >
+                      ✕
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <button
+              type="button"
+              className="add-btn"
+              onClick={() =>
+                set('extra_payments', [...values.extra_payments, { description: '', value: 0, date: today() }])
+              }
+            >
+              + Adicionar pagamento
+            </button>
+          </div>
+
           <fieldset className="input input--full">
             <legend>Serviços</legend>
-            <div className="chips">
-              {serviceOptions.map((service) => {
-                const active = values.services.some((s) => s.toLowerCase() === service.toLowerCase());
-                return (
-                  <button
-                    key={service}
-                    type="button"
-                    className={`chip${active ? ' chip--active' : ''}`}
-                    aria-pressed={active}
-                    onClick={() => toggleService(service)}
-                  >
-                    {service}
-                  </button>
-                );
-              })}
-            </div>
+            <ChipPicker options={specialties} selected={values.services} onChange={(s) => set('services', s)} />
           </fieldset>
 
           <label className="input input--full">

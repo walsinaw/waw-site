@@ -7,6 +7,7 @@ import Login from './Login';
 import Dashboard from './Dashboard';
 import ProjectsAdmin from './ProjectsAdmin';
 import ClientsAdmin from './ClientsAdmin';
+import TeamAdmin from './TeamAdmin';
 import './admin.css';
 
 type AuthState = 'loading' | 'signed-out' | 'not-admin' | 'ready';
@@ -25,6 +26,11 @@ const icons = {
   clients: (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Zm0 2c-4 0-8 2-8 5v2h16v-2c0-3-4-5-8-5Z" />
+    </svg>
+  ),
+  team: (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM9 13c-3.3 0-7 1.6-7 4.5V20h14v-2.5C16 14.6 12.3 13 9 13Zm8 0c-.5 0-1 0-1.6.1 1.6 1.1 2.6 2.6 2.6 4.4V20h4v-2.5c0-2.9-2.7-4.5-5-4.5Z" />
     </svg>
   ),
   site: (
@@ -102,6 +108,10 @@ export default function AdminApp() {
             {icons.clients}
             Clientes
           </NavLink>
+          <NavLink to="/admin/funcionarios" className="sidebar__link">
+            {icons.team}
+            Funcionários
+          </NavLink>
           <a href="/" target="_blank" rel="noreferrer" className="sidebar__link sidebar__link--muted">
             {icons.site}
             Ver site
@@ -136,6 +146,7 @@ export default function AdminApp() {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="portfolio" element={<ProjectsAdmin />} />
             <Route path="clientes" element={<ClientsAdmin />} />
+            <Route path="funcionarios" element={<TeamAdmin />} />
             <Route path="*" element={<Navigate to="dashboard" replace />} />
           </Routes>
         </main>

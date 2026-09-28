@@ -1,6 +1,7 @@
 -- WAW Studio — banco do site e do painel /admin
 -- Rode este arquivo inteiro no Supabase: Dashboard → SQL Editor → New query → colar → Run.
 -- Pode rodar de novo sem problema (não duplica nada).
+-- DEPOIS rode também supabase/02-equipe-e-pagamentos.sql.
 -- ANTES: crie seu usuário em Authentication → Users → Add user (com o e-mail do final deste arquivo).
 
 -- ---------------------------------------------------------------

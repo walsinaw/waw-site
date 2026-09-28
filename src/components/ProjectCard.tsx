@@ -1,11 +1,12 @@
-import type { Project } from '../lib/types';
-import dot from '../assets/dot.svg';
+import { splitCategories, type Project } from '../lib/types';
 import hoverGradient from '../assets/marquesa-hover.png';
 import behance from '../assets/behance.svg';
 import Arrow from './Arrow';
 import './Portfolio.css';
 
 // Card do portfólio: layout do Figma (imagem, nome ● categorias) + descrição curta.
+const linkLabels = { behance: 'ver no Behance', site: 'ver o site', instagram: 'ver no Instagram', none: '' };
+
 export default function ProjectCard({ project }: { project: Project }) {
   const href = project.link_type !== 'none' && project.link_url ? project.link_url : null;
 
@@ -17,8 +18,8 @@ export default function ProjectCard({ project }: { project: Project }) {
         <img src={hoverGradient} alt="" className="project__hover" />
         {project.categories && (
           <p className="project__overlay-tags">
-            {project.categories.split('·').map((tag) => (
-              <span key={tag}>{tag.trim()}</span>
+            {splitCategories(project.categories).map((tag) => (
+              <span key={tag}>{tag}</span>
             ))}
           </p>
         )}
@@ -27,20 +28,13 @@ export default function ProjectCard({ project }: { project: Project }) {
             <img src={behance} alt="" className="project__badge project__badge--behance" />
           ) : (
             <span className="project__badge project__badge--site">
-              Ver site
+              {project.link_type === 'instagram' ? 'Ver no Instagram' : 'Ver site'}
               <Arrow variant="small" direction="up-right" className="project__badge-arrow" />
             </span>
           ))}
       </div>
-      <div className="project__caption">
-        <h3 className="project__name">{project.title}</h3>
-        {project.categories && (
-          <p className="project__tags">
-            <img src={dot} alt="" className="project__dot" />
-            {project.categories}
-          </p>
-        )}
-      </div>
+      {/* As especialidades aparecem só na imagem, no hover */}
+      <h3 className="project__name">{project.title}</h3>
       {project.description && <p className="project__description">{project.description}</p>}
     </>
   );
@@ -51,7 +45,7 @@ export default function ProjectCard({ project }: { project: Project }) {
       target="_blank"
       rel="noreferrer"
       className="project project--link"
-      aria-label={`${project.title} — ${project.link_type === 'behance' ? 'ver no Behance' : 'ver o site'}`}
+      aria-label={`${project.title} — ${linkLabels[project.link_type]}`}
     >
       {content}
     </a>

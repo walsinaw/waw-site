@@ -29,7 +29,7 @@
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--red-bright);
 }
 
 .footer__socials {
@@ -72,21 +72,8 @@
   color: var(--red-bright);
 }
 
-.footer__signature {
-  margin-top: clamp(64px, 8vw, 120px);
-  font-family: var(--font-cosmic);
-  font-size: clamp(30px, 5.4vw, 80px);
-  line-height: 1;
-}
-
-.footer__signature b {
-  font-family: var(--font-pirso);
-  font-weight: 600;
-  color: var(--red-bright);
-}
-
 .footer__copy {
-  margin-top: 36px;
+  margin-top: clamp(48px, 6vw, 80px);
   padding-top: 20px;
   border-top: 1px solid var(--line);
   font-size: 12px;
@@ -100,5 +87,10 @@
 
   .footer__brand {
     grid-column: 1 / -1;
+  }
+
+  /* No celular, os links repetem o menu: some */
+  .footer__links {
+    display: none;
   }
 }

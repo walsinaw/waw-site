@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import { deleteProject, saveProject, uploadCover } from '../lib/api';
-import type { LinkType, Project, ProjectInput } from '../lib/types';
+import { joinCategories, specialties, splitCategories, type LinkType, type Project, type ProjectInput } from '../lib/types';
 import Modal from './Modal';
+import ChipPicker from './ChipPicker';
 
 interface ProjectFormProps {
   project: Project | null;
@@ -13,8 +14,24 @@ interface ProjectFormProps {
 const linkOptions: { value: LinkType; label: string }[] = [
   { value: 'behance', label: 'Behance' },
   { value: 'site', label: 'Site do cliente' },
+  { value: 'instagram', label: 'Instagram do cliente' },
   { value: 'none', label: 'Sem link' },
 ];
+
+const linkFields: Record<LinkType, { label: string; placeholder: string }> = {
+  behance: { label: 'Link do Behance', placeholder: 'https://www.behance.net/gallery/…' },
+  site: { label: 'Endereço do site', placeholder: 'https://site-do-cliente.com.br' },
+  instagram: { label: 'Instagram do cliente', placeholder: '@cliente ou https://instagram.com/cliente' },
+  none: { label: 'Link', placeholder: 'Sem link: o card não leva para lugar nenhum' },
+};
+
+/** Aceita "@perfil", "perfil", "instagram.com/perfil" ou o link completo. */
+function normalizeLink(type: LinkType, value: string) {
+  if (type === 'instagram' && !/instagram\.com/i.test(value)) {
+    return `https://www.instagram.com/${value.replace(/^@/, '').replace(/\/+$/, '')}/`;
+  }
+  return /^https?:\/\//i.test(value) ? value : `https://${value}`;
+}
 
 export default function ProjectForm({ project, nextPosition, onClose, onSaved }: ProjectFormProps) {
   const [values, setValues] = useState<ProjectInput>(
@@ -59,7 +76,7 @@ export default function ProjectForm({ project, nextPosition, onClose, onSaved }:
     let linkUrl = values.link_url?.trim() || null;
     if (values.link_type !== 'none') {
       if (!linkUrl) return setError('Coloque o link do projeto (ou escolha “Sem link”).');
-      if (!/^https?:\/\//i.test(linkUrl)) linkUrl = `https://${linkUrl}`;
+      linkUrl = normalizeLink(values.link_type, linkUrl);
     } else {
       linkUrl = null;
     }
@@ -117,15 +134,6 @@ export default function ProjectForm({ project, nextPosition, onClose, onSaved }:
           </label>
 
           <label className="input">
-            <span>Especialidades</span>
-            <input
-              value={values.categories}
-              onChange={(e) => set('categories', e.target.value)}
-              placeholder="Landing Page · Web · UX/UI"
-            />
-          </label>
-
-          <label className="input">
             <span>Mostrar na home</span>
             <select value={values.featured ? 'sim' : 'nao'} onChange={(e) => set('featured', e.target.value === 'sim')}>
               <option value="sim">Sim</option>
@@ -144,21 +152,24 @@ export default function ProjectForm({ project, nextPosition, onClose, onSaved }:
             </select>
           </label>
 
-          <label className="input input--wide">
-            <span>{values.link_type === 'behance' ? 'Link do Behance' : values.link_type === 'site' ? 'Endereço do site' : 'Link'}</span>
+          <label className="input input--full">
+            <span>{linkFields[values.link_type].label}</span>
             <input
               value={values.link_type === 'none' ? '' : values.link_url ?? ''}
               onChange={(e) => set('link_url', e.target.value)}
-              placeholder={
-                values.link_type === 'behance'
-                  ? 'https://www.behance.net/gallery/…'
-                  : values.link_type === 'site'
-                    ? 'https://site-do-cliente.com.br'
-                    : 'Sem link: o card não leva para lugar nenhum'
-              }
+              placeholder={linkFields[values.link_type].placeholder}
               disabled={values.link_type === 'none'}
             />
           </label>
+
+          <fieldset className="input input--full">
+            <legend>Especialidades</legend>
+            <ChipPicker
+              options={specialties}
+              selected={splitCategories(values.categories)}
+              onChange={(selected) => set('categories', joinCategories(selected))}
+            />
+          </fieldset>
 
           <div className="input">
             <span>Capa</span>

@@ -24,7 +24,7 @@ export default function Filters({ filters, children }: { filters: Filter[]; chil
         >
           {filter.options.map(([value, label]) => (
             <option key={value} value={value}>
-              {value === 'todos' ? `${filter.label}: Todos` : label}
+              {value === 'todos' ? `${filter.label}: ${label}` : label}
             </option>
           ))}
         </select>

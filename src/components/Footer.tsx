@@ -75,7 +75,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          <nav aria-label="Rodapé">
+          <nav aria-label="Rodapé" className="footer__links">
             <p className="footer__heading">// Links</p>
             <ul className="footer__list">
               <li><a href="/#sobre">Sobre</a></li>
@@ -101,10 +101,6 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-
-        <p className="footer__signature">
-          O extraordinário começa com um <b>uau.</b>
-        </p>
 
         <p className="footer__copy">© {new Date().getFullYear()} WAW Studio</p>
       </div>

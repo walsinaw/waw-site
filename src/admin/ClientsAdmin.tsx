@@ -3,7 +3,7 @@ import { listClients } from '../lib/api';
 import { clientStatuses, statusLabels, type Client, type ClientStatus } from '../lib/types';
 import ClientForm from './ClientForm';
 import Filters from './Filters';
-import { money, shortDate, whatsappLink } from './format';
+import { clientValue, shortDate, whatsappLink } from './format';
 
 export default function ClientsAdmin() {
   const [clients, setClients] = useState<Client[] | null>(null);
@@ -109,7 +109,12 @@ export default function ClientsAdmin() {
                 </p>
                 <div className="card__footer">
                   <span className="card__info">
-                    {client.value != null ? money.format(client.value) : shortDate.format(new Date(client.created_at))}
+                    {clientValue(client.value, client.value_type) ?? shortDate.format(new Date(client.created_at))}
+                    {client.extra_payments.length > 0 && (
+                      <small className="card__extra">
+                        +{client.extra_payments.length} {client.extra_payments.length === 1 ? 'extra' : 'extras'}
+                      </small>
+                    )}
                   </span>
                   {client.whatsapp && (
                     <a

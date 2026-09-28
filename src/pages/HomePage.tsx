@@ -15,11 +15,7 @@ import type { ServiceId } from '../data/content';
 
 export default function HomePage() {
   const { hash } = useLocation();
-  // Clicar num card de serviço já deixa o serviço marcado no formulário.
   const [selectedServices, setSelectedServices] = useState<ServiceId[]>([]);
-
-  const pickService = (id: ServiceId) =>
-    setSelectedServices((current) => (current.includes(id) ? current : [...current, id]));
 
   // Vindo de outra página com /#secao, rola até a seção depois de renderizar.
   useEffect(() => {
@@ -33,7 +29,7 @@ export default function HomePage() {
       <main>
         <Hero />
         <Intro />
-        <Solutions onPickService={pickService} />
+        <Solutions />
         <Connected />
         <Portfolio />
         <Reasons />
