@@ -1,6 +1,5 @@
 import './Marquee.css';
 
-// Resumo dos serviços da WAW
 const items = [
   'Design e identidade visual',
   'Social media',
@@ -11,8 +10,6 @@ const items = [
   'Tráfego pago',
 ];
 
-// Faixa off-white com os serviços passando, separados pelo W vermelho. A lista aparece duas vezes para o loop não ter emenda;
-// leitores de tela ouvem só a primeira.
 export default function Marquee() {
   return (
     <div className="marquee">

@@ -32,10 +32,9 @@ export default function Intro() {
         <figure className="founder__photo">
           <span className="founder__picture">
             <img src={julia} alt="Julia Alsina, CEO da WAW Studio" loading="lazy" />
-            {/* Moldura desenhada que aparece no hover */}
             <img src={frame} alt="" className="founder__frame" loading="lazy" />
           </span>
-          <figcaption>Julia Alsina, CEO da WAW</figcaption>
+          <figcaption>Julia Alsina, fundadora da WAW</figcaption>
         </figure>
 
         <div className="founder__text">
@@ -44,7 +43,7 @@ export default function Intro() {
             Quem está à frente da <b>WAW?</b>
           </h2>
           <p className="lead">
-            Sou a Julia Alsina, CEO da WAW. Há 3 anos trabalho com comunicação digital, ajudando marcas a
+            Sou a Ju, fundadora da WAW! Há 3 anos trabalho com comunicação digital, ajudando marcas a
             descobrirem o próprio jeito de aparecer: da estratégia ao post, do posicionamento ao site no ar.
           </p>
           <p className="lead">
