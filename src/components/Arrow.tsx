@@ -2,7 +2,6 @@ import setaOrcamento from '../assets/seta-orcamento.svg?raw';
 import setaCard from '../assets/seta-card.svg?raw';
 import setaBaixo from '../assets/seta-baixo.svg?raw';
 
-// SVGs das setas do Figma em linha, com a cor herdada do texto (currentColor).
 const sources = {
   small: setaOrcamento,
   card: setaCard,
@@ -21,7 +20,6 @@ const recolored = Object.fromEntries(
 
 interface ArrowProps {
   variant: keyof typeof sources;
-  // As setas do Figma apontam para cima; a direção vem da rotação, como no protótipo.
   direction: 'right' | 'down' | 'up-right';
   className?: string;
 }

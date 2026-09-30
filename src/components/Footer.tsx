@@ -46,6 +46,9 @@ export default function Footer() {
             <p className="footer__about">
               Estratégia, criatividade e tecnologia para marcas que querem ser lembradas.
             </p>
+            <p className="footer__about2">
+              O extraordinário começa com um UAU.
+            </p>
             <ul className="footer__socials">
               {socials.map((social) => (
                 <li key={social.label}>
@@ -65,7 +68,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <p className="footer__heading">// Serviços</p>
+            <p className="footer__heading">Serviços</p>
             <ul className="footer__list">
               {footerServices.map((service) => (
                 <li key={service}>
@@ -76,7 +79,7 @@ export default function Footer() {
           </div>
 
           <nav aria-label="Rodapé" className="footer__links">
-            <p className="footer__heading">// Links</p>
+            <p className="footer__heading">Links</p>
             <ul className="footer__list">
               <li><a href="/#sobre">Sobre</a></li>
               <li><a href="/#servicos">Serviços</a></li>
@@ -86,7 +89,7 @@ export default function Footer() {
           </nav>
 
           <div>
-            <p className="footer__heading">// Contato</p>
+            <p className="footer__heading">Contato</p>
             <ul className="footer__list">
               <li>
                 <a href={`https://wa.me/${contact.whatsappNumber}`} target="_blank" rel="noreferrer">
