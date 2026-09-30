@@ -1,0 +1,54 @@
+.marquee {
+  overflow: hidden;
+  padding-block: clamp(14px, 1.6vw, 22px);
+  background: var(--cream);
+  color: var(--ink-deep);
+}
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  animation: marquee 40s linear infinite;
+}
+
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
+
+.marquee__list {
+  display: flex;
+  list-style: none;
+}
+
+.marquee__list li {
+  display: flex;
+  align-items: center;
+  font-family: var(--font-pirso);
+  font-weight: 600;
+  font-size: clamp(20px, 2.4vw, 34px);
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* separador: o W vermelho da WAW entre os itens */
+.marquee__list li::after {
+  content: '';
+  flex: none;
+  width: 1.5em;
+  height: 1em;
+  margin-inline: clamp(20px, 2.6vw, 40px);
+  background: url('../assets/logo-w-vermelho.png') center / contain no-repeat;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track {
+    animation: none;
+  }
+}

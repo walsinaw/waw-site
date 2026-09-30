@@ -42,12 +42,7 @@ export default function Hero() {
             O EXTRAORDINÁRIO
           </span>
           <span className="hero__line hero__line--second" aria-hidden="true">
-            {/* A cedilha é um "s" menor sob o C, exatamente como no Figma */}
-            COME
-            <span className="hero__cedilla">
-              C<span className="hero__cedilla-mark">s</span>
-            </span>
-            A COM UM <span className="hero__uau">UAU</span>.
+            COMEÇA COM UM <span className="hero__uau">UAU</span>.
           </span>
         </h1>
 

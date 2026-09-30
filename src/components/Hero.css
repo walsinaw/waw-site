@@ -23,7 +23,7 @@
 }
 
 .hero__kicker {
-  font-family: var(--font-cosmic);
+  font-family: var(--font-neue);
   font-size: clamp(15px, 1.35vw, 20px);
   line-height: 1.1;
   animation: hero-in 1s var(--ease) 0.1s both;
@@ -32,7 +32,7 @@
 /* Proporções do Figma (180px): linha 1 a 18px do kicker, linha 2 sobe 65px */
 .hero__title {
   margin-top: 0.1em;
-  font-family: var(--font-cosmic);
+  font-family: var(--font-neue);
   font-size: clamp(42px, 7.4vw, 116px);
 }
 
@@ -52,19 +52,6 @@
 .hero__uau {
   font-family: var(--font-pirso);
   font-weight: 600;
-}
-
-.hero__cedilla {
-  position: relative;
-}
-
-/* "s" de 96px sob o C (180px) no Figma */
-.hero__cedilla-mark {
-  position: absolute;
-  left: 0.3875em;
-  top: 1.21875em;
-  font-size: 0.5333em;
-  line-height: 1.1;
 }
 
 .hero__bottom {
@@ -94,7 +81,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-family: var(--font-cosmic);
+  font-family: var(--font-neue);
   font-size: 17px;
 }
 

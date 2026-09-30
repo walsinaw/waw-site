@@ -1,4 +1,4 @@
-/* Texto à esquerda, formulário à direita */
+/* Texto à esquerda, formulário à direita, os dois começando na mesma altura */
 .contact__layout {
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
@@ -6,15 +6,10 @@
   align-items: start;
 }
 
-.contact__copy {
-  position: sticky;
-  top: 120px;
-}
-
 .contact__lead {
   max-width: 400px;
   margin-top: 14px;
-  font-family: var(--font-cosmic);
+  font-family: var(--font-neue);
   font-size: clamp(17px, 1.5vw, 21px);
   line-height: 1.15;
 }
@@ -64,7 +59,7 @@
 .contact__channel-value {
   display: block;
   margin-top: 3px;
-  font-family: var(--font-cosmic);
+  font-family: var(--font-neue);
   font-size: clamp(17px, 1.4vw, 20px);
   line-height: 1.1;
 }
@@ -102,7 +97,7 @@
 .field__label {
   margin-bottom: 10px;
   padding: 0;
-  font-family: var(--font-cosmic);
+  font-family: var(--font-neue);
   font-size: 16px;
   line-height: 1.1;
 }
@@ -174,7 +169,7 @@
   border-radius: 12px;
   background: rgba(0, 0, 0, 0.28);
   text-align: left;
-  font-family: var(--font-cosmic);
+  font-family: var(--font-neue);
   line-height: 1.15;
   transition: border-color 0.25s, background-color 0.25s, transform 0.25s var(--ease);
 }
@@ -239,10 +234,6 @@
 @media (max-width: 960px) {
   .contact__layout {
     grid-template-columns: 1fr;
-  }
-
-  .contact__copy {
-    position: static;
   }
 }
 

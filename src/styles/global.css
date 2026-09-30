@@ -1,7 +1,28 @@
 @font-face {
-  font-family: 'Cosmic';
-  src: url('/fonts/Cosmic-Regular.otf') format('opentype');
+  font-family: 'Neue Haas Display';
+  src: url('/fonts/neue-haas-grotesk-display-pro-cufonfonts/NeueHaasDisplayLight.ttf') format('truetype');
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Haas Display';
+  src: url('/fonts/neue-haas-grotesk-display-pro-cufonfonts/NeueHaasDisplayRoman.ttf') format('truetype');
   font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Haas Display';
+  src: url('/fonts/neue-haas-grotesk-display-pro-cufonfonts/NeueHaasDisplayMediu.ttf') format('truetype');
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Haas Display';
+  src: url('/fonts/neue-haas-grotesk-display-pro-cufonfonts/NeueHaasDisplayBold.ttf') format('truetype');
+  font-weight: 700;
   font-display: swap;
 }
 
@@ -19,13 +40,16 @@
   --bg: #1a1a1a;
   --bg-raised: #1f1f1f;
   --paper: #ebeae6;
+  /* paleta WAW: off-white e quase preto */
+  --cream: #d9d6cf;
+  --ink-deep: #09040a;
   --ink: #1a1a1a;
   --white: #ffffff;
   --muted: rgba(255, 255, 255, 0.62);
   --line: rgba(255, 255, 255, 0.12);
   --placeholder: #d9d9d9;
 
-  --font-cosmic: 'Cosmic', 'Outfit', sans-serif;
+  --font-neue: 'Neue Haas Display', 'Inter', system-ui, sans-serif;
   --font-pirso: 'Pirso', 'Outfit', sans-serif;
   --font-inter: 'Inter', system-ui, sans-serif;
 
@@ -155,9 +179,9 @@ h3 {
   color: var(--red-bright);
 }
 
-/* Títulos: Cosmic leve + trecho em Pirso, igual ao "UAU" do Figma */
+/* Títulos: Neue Haas leve + trecho em Pirso, igual ao "UAU" do Figma */
 .display {
-  font-family: var(--font-cosmic);
+  font-family: var(--font-neue);
   font-size: clamp(34px, 4.6vw, 66px);
   line-height: 1.02;
   letter-spacing: -0.01em;
@@ -182,7 +206,7 @@ h3 {
 /* Cabeçalho das seções que vieram do Figma: "WAW Studio" + título em caixa alta */
 .figma-title__label {
   display: block;
-  font-family: var(--font-cosmic);
+  font-family: var(--font-neue);
   font-size: clamp(15px, 1.2vw, 19px);
   line-height: 1.1;
   color: var(--red-bright);
@@ -206,7 +230,7 @@ h3 {
   height: 52px;
   padding: 0 30px;
   border-radius: 999px;
-  font-family: var(--font-cosmic);
+  font-family: var(--font-neue);
   font-size: 18px;
   line-height: 1;
   white-space: nowrap;

@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import Hero from '../components/Hero';
 import Intro from '../components/Intro';
+import Marquee from '../components/Marquee';
 import Solutions from '../components/Solutions';
 import Connected from '../components/Connected';
 import Portfolio from '../components/Portfolio';
@@ -29,6 +30,7 @@ export default function HomePage() {
       <main>
         <Hero />
         <Intro />
+        <Marquee />
         <Solutions />
         <Connected />
         <Portfolio />

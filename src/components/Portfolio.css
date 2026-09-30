@@ -23,149 +23,153 @@
   color: var(--muted);
 }
 
-/* Grade 2 colunas do Figma (783×479, espaço 74) */
+/* Grade limpa: quadrados colados, em preto e branco até o mouse passar */
 .portfolio__grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(20px, 3.9vw, 56px);
-  row-gap: clamp(44px, 4.5vw, 64px);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   margin-top: clamp(40px, 4.5vw, 64px);
 }
 
 .project {
-  display: block;
-}
-
-.project__media {
   position: relative;
-  aspect-ratio: 783 / 479;
-  background: var(--placeholder);
+  display: block;
+  aspect-ratio: 1;
   overflow: hidden;
+  background: var(--bg-raised);
 }
 
-.project__image,
-.project__hover {
+.project__image {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  filter: grayscale(1);
+  transition: filter 0.6s var(--ease), transform 0.9s var(--ease);
 }
 
-.project__image {
-  transition: transform 0.9s var(--ease);
-}
-
-.project__hover {
+/* Escurece a base para o nome ficar legível */
+.project::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10, 10, 10, 0.78), rgba(10, 10, 10, 0) 55%);
   opacity: 0;
   transition: opacity 0.5s var(--ease);
 }
 
-.project__badge {
+.project__info {
   position: absolute;
-  right: 3%;
-  bottom: 3%;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
-}
-
-.project__badge--behance {
-  width: 9%;
-  max-width: 52px;
-  aspect-ratio: 1;
-}
-
-.project__badge--site {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  border-radius: 999px;
-  background: var(--white);
-  color: var(--red);
-  font-family: var(--font-cosmic);
-  font-size: 15px;
-  line-height: 1;
-}
-
-.project__badge-arrow {
-  width: 11px;
-  height: 11px;
-}
-
-.project__overlay-tags {
-  position: absolute;
-  left: 3%;
-  right: 30%;
-  bottom: 4%;
+  z-index: 1;
+  left: 8%;
+  right: 8%;
+  bottom: 8%;
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  flex-direction: column;
+  gap: 10px;
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(12px);
   transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
-}
-
-.project__overlay-tags span {
-  padding: 7px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.12);
-  font-family: var(--font-cosmic);
-  font-size: clamp(12px, 1vw, 15px);
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.project:hover .project__hover,
-.project:focus-visible .project__hover,
-.project:hover .project__badge,
-.project:focus-visible .project__badge,
-.project:hover .project__overlay-tags,
-.project:focus-visible .project__overlay-tags {
-  opacity: 1;
-}
-
-.project:hover .project__badge,
-.project:focus-visible .project__badge,
-.project:hover .project__overlay-tags,
-.project:focus-visible .project__overlay-tags {
-  transform: none;
-}
-
-.project:hover .project__image {
-  transform: scale(1.03);
-}
-
-/* Sem mouse (celular) não há hover: a sombra e as especialidades ficam sempre visíveis */
-@media (hover: none) {
-  .project__hover,
-  .project__overlay-tags {
-    opacity: 1;
-    transform: none;
-  }
 }
 
 .project__name {
-  margin-top: 12px;
   font-family: var(--font-pirso);
   font-weight: 600;
-  font-size: clamp(22px, 2.3vw, 32px);
-  line-height: 1.2;
+  font-size: clamp(20px, 2vw, 30px);
+  line-height: 1.05;
+  text-transform: uppercase;
 }
 
-.project__description {
-  max-width: 520px;
-  margin-top: 6px;
-  font-size: 15px;
-  color: var(--muted);
+.project__tags {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.project__go {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  right: 12%;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--red);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.4s var(--ease), transform 0.5s var(--ease), background-color 0.2s;
+}
+
+.project:hover .project__image,
+.project:focus-visible .project__image {
+  filter: none;
+  transform: scale(1.04);
+}
+
+.project:hover::after,
+.project:focus-visible::after,
+.project:hover .project__info,
+.project:focus-visible .project__info,
+.project:hover .project__go,
+.project:focus-visible .project__go {
+  opacity: 1;
+  transform: none;
+}
+
+.project:hover .project__go {
+  background: var(--red-bright);
+}
+
+.project:focus-visible {
+  outline: 2px solid var(--red-bright);
+  outline-offset: -2px;
+}
+
+/* Sem mouse (celular): cor, nome e selo sempre visíveis */
+@media (hover: none) {
+  .project__image {
+    filter: none;
+  }
+
+  .project::after,
+  .project__info,
+  .project__go {
+    opacity: 1;
+    transform: none;
+  }
+
+  .project__go {
+    top: auto;
+    right: 6%;
+    bottom: 8%;
+    width: 48px;
+    height: 48px;
+    font-size: 10px;
+  }
+
+  .project__info {
+    right: calc(6% + 60px);
+  }
 }
 
 .portfolio__more {
   display: flex;
   justify-content: center;
   margin-top: clamp(56px, 6vw, 80px);
+}
+
+@media (max-width: 1100px) {
+  .portfolio__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 860px) {
@@ -180,18 +184,13 @@
   }
 
   .portfolio__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .portfolio__grid {
     grid-template-columns: 1fr;
-  }
-
-  /* no celular não há hover: o selo (Behance / Ver site) fica sempre visível */
-  .project__badge {
-    opacity: 1;
-    transform: none;
-  }
-
-  .project__badge--site {
-    padding: 8px 12px;
-    font-size: 13px;
   }
 }
 

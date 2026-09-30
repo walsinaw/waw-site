@@ -1,18 +1,9 @@
--- WAW Studio — atualização 03: logins com permissões por área + pagamentos da equipe.
--- Rode DEPOIS do 02: Dashboard → SQL Editor → New query → colar → Run. Pode rodar de novo.
-
--- ---------------------------------------------------------------
--- Acessos: cada login do painel tem um tipo e as áreas que pode ver
---   admin  → tudo, inclusive a página de Acessos
---   equipe → só as áreas marcadas em "permissions"
--- ---------------------------------------------------------------
 alter table public.admins add column if not exists name text not null default '';
 alter table public.admins add column if not exists role text not null default 'admin';
 alter table public.admins add column if not exists permissions text[] not null default '{}';
 alter table public.admins add column if not exists active boolean not null default true;
 alter table public.admins add column if not exists team_id bigint references public.team (id) on delete set null;
 
--- Quem já existia (você) continua admin; os próximos logins nascem como "equipe".
 alter table public.admins alter column role set default 'equipe';
 
 alter table public.admins drop constraint if exists admins_role_check;
@@ -23,7 +14,6 @@ alter table public.admins add constraint admins_permissions_check
 
 create index if not exists admins_team_idx on public.admins (team_id);
 
--- Administrador de verdade (acesso total)
 create or replace function private.is_admin()
 returns boolean
 language sql
@@ -37,7 +27,6 @@ as $$
   );
 $$;
 
--- Pode mexer nesta área? (admin pode tudo; equipe só nas áreas marcadas)
 create or replace function private.can(area text)
 returns boolean
 language sql
@@ -54,12 +43,6 @@ $$;
 revoke execute on function private.can(text) from public, anon;
 grant execute on function private.can(text) to authenticated;
 
--- Cada pessoa lê só a própria linha (o painel usa isso para saber o que mostrar).
--- Ninguém edita a tabela pelo site: criar/alterar logins passa pela função "admin-users".
-
--- ---------------------------------------------------------------
--- Regras das tabelas passam a respeitar as áreas
--- ---------------------------------------------------------------
 drop policy if exists "logado vê publicados, admin vê todos" on public.projects;
 create policy "logado vê publicados, admin vê todos" on public.projects
   for select to authenticated
@@ -143,16 +126,13 @@ create policy "admin apaga fotos da equipe" on storage.objects
   for delete to authenticated
   using (bucket_id = 'team' and (select private.can('funcionarios')));
 
--- ---------------------------------------------------------------
--- Pagamentos da equipe (mensalidade do fixo ou pagamento por projeto)
--- ---------------------------------------------------------------
 create table if not exists public.team_payments (
   id bigint generated always as identity primary key,
   member_id bigint not null references public.team (id) on delete cascade,
   amount numeric(12, 2) not null check (amount > 0),
   paid_on date not null default current_date,
-  reference text not null default '' check (char_length(reference) <= 120),  -- ex.: "Setembro/2026"
-  client_id bigint references public.clients (id) on delete set null,       -- projeto, no freelancer
+  reference text not null default '' check (char_length(reference) <= 120),  
+  client_id bigint references public.clients (id) on delete set null,       
   notes text not null default '' check (char_length(notes) <= 1000),
   created_at timestamptz not null default now()
 );
@@ -170,5 +150,4 @@ create policy "equipe: pagamentos" on public.team_payments
   using ((select private.can('funcionarios')))
   with check ((select private.can('funcionarios')));
 
--- Confere: você deve aparecer como admin.
 select u.email, a.role, a.active from public.admins a join auth.users u on u.id = a.user_id;

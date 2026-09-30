@@ -12,7 +12,7 @@ export default function Solutions() {
           <h2>
             <span className="figma-title__label">WAW Studio</span>
             <span className="figma-title__line">NOSSAS</span>
-            <span className="figma-title__line">SOLUÇOES</span>
+            <span className="figma-title__line">SOLUÇÕES</span>
           </h2>
           <div className="solutions__intro">
             <p className="solutions__intro-title">CRIATIVIDADE QUE VAI ALÉM DO VISUAL</p>
