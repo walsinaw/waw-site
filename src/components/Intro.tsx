@@ -1,5 +1,5 @@
-import julia from '../assets/julia-alsina.jpeg';
-import frame from '../assets/moldura.png';
+import julia from '../assets/julia-alsina.webp';
+import frame from '../assets/moldura.webp';
 import './sections.css';
 
 const facts = [

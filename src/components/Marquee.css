@@ -38,7 +38,7 @@
   width: 1.5em;
   height: 1em;
   margin-inline: clamp(20px, 2.6vw, 40px);
-  background: url('../assets/logo-w-vermelho.png') center / contain no-repeat;
+  background: url('../assets/logo-w-vermelho.webp') center / contain no-repeat;
 }
 
 @keyframes marquee {

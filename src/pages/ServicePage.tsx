@@ -7,6 +7,7 @@ import Arrow from '../components/Arrow';
 import { services, type ServiceId } from '../data/content';
 import { servicePages, type Block } from '../data/servicePages';
 import { useScrollReveal } from '../lib/useScrollReveal';
+import { usePageMeta } from '../lib/usePageMeta';
 import './ServicePage.css';
 
 /** "texto **destaque**" → texto <b>destaque</b> */
@@ -159,14 +160,11 @@ function ServiceContent({ id }: { id: ServiceId }) {
   const [selected, setSelected] = useState<ServiceId[]>([id]);
   const others = services.filter((s) => s.id !== id);
   useScrollReveal();
+  usePageMeta(`/servicos/${id}`);
 
   useEffect(() => {
-    document.title = `${page.label} — WAW Studio`;
     window.scrollTo(0, 0);
-    return () => {
-      document.title = 'WAW Studio — O extraordinário começa com um UAU.';
-    };
-  }, [page.label]);
+  }, [id]);
 
   return (
     <>

@@ -14,9 +14,11 @@ import Contact from '../components/Contact';
 import Footer from '../components/Footer';
 import type { ServiceId } from '../data/content';
 import { useScrollReveal } from '../lib/useScrollReveal';
+import { usePageMeta } from '../lib/usePageMeta';
 
 export default function HomePage() {
   useScrollReveal();
+  usePageMeta('/');
   const { hash } = useLocation();
   const [selectedServices, setSelectedServices] = useState<ServiceId[]>([]);
 

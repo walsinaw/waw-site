@@ -5,17 +5,15 @@ import ProjectCard from '../components/ProjectCard';
 import { useProjects } from '../components/useProjects';
 import '../components/Portfolio.css';
 import { useScrollReveal } from '../lib/useScrollReveal';
+import { usePageMeta } from '../lib/usePageMeta';
 
 export default function PortfolioPage() {
   useScrollReveal();
+  usePageMeta('/portfolio');
   const projects = useProjects();
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = 'Portfólio — WAW Studio';
-    return () => {
-      document.title = 'WAW Studio — O extraordinário começa com um UAU.';
-    };
   }, []);
 
   return (

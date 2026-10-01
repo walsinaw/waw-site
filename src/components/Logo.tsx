@@ -1,5 +1,5 @@
-import logoWaw from '../assets/logo-waw.png';
-import logoW from '../assets/logo-w.png';
+import logoWaw from '../assets/logo-waw.webp';
+import logoW from '../assets/logo-w.webp';
 
 const crops = {
   waw: { src: logoWaw, width: '100%', height: '318.18%', left: '0', top: '-109.09%' },
