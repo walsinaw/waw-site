@@ -6,6 +6,7 @@ import Footer from '../components/Footer';
 import Arrow from '../components/Arrow';
 import { services, type ServiceId } from '../data/content';
 import { servicePages, type Block } from '../data/servicePages';
+import { useScrollReveal } from '../lib/useScrollReveal';
 import './ServicePage.css';
 
 /** "texto **destaque**" → texto <b>destaque</b> */
@@ -157,6 +158,7 @@ function ServiceContent({ id }: { id: ServiceId }) {
   // O serviço da página já vem marcado no formulário de contato.
   const [selected, setSelected] = useState<ServiceId[]>([id]);
   const others = services.filter((s) => s.id !== id);
+  useScrollReveal();
 
   useEffect(() => {
     document.title = `${page.label} — WAW Studio`;

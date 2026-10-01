@@ -13,8 +13,10 @@ import Closing from '../components/Closing';
 import Contact from '../components/Contact';
 import Footer from '../components/Footer';
 import type { ServiceId } from '../data/content';
+import { useScrollReveal } from '../lib/useScrollReveal';
 
 export default function HomePage() {
+  useScrollReveal();
   const { hash } = useLocation();
   const [selectedServices, setSelectedServices] = useState<ServiceId[]>([]);
 

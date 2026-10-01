@@ -4,8 +4,10 @@ import Footer from '../components/Footer';
 import ProjectCard from '../components/ProjectCard';
 import { useProjects } from '../components/useProjects';
 import '../components/Portfolio.css';
+import { useScrollReveal } from '../lib/useScrollReveal';
 
 export default function PortfolioPage() {
+  useScrollReveal();
   const projects = useProjects();
 
   useEffect(() => {

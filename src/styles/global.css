@@ -40,7 +40,6 @@
   --bg: #1a1a1a;
   --bg-raised: #1f1f1f;
   --paper: #ebeae6;
-  /* paleta WAW: off-white e quase preto */
   --cream: #d9d6cf;
   --ink-deep: #09040a;
   --ink: #1a1a1a;
@@ -152,7 +151,6 @@ h3 {
   padding-block: var(--section-y);
 }
 
-/* Rótulo à esquerda + conteúdo a partir de ~27% (como a WDA) */
 .split {
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(0, 8fr);
@@ -179,7 +177,6 @@ h3 {
   color: var(--red-bright);
 }
 
-/* Títulos: Neue Haas leve + trecho em Pirso, igual ao "UAU" do Figma */
 .display {
   font-family: var(--font-neue);
   font-size: clamp(34px, 4.6vw, 66px);
@@ -203,7 +200,6 @@ h3 {
   margin-top: 16px;
 }
 
-/* Cabeçalho das seções que vieram do Figma: "WAW Studio" + título em caixa alta */
 .figma-title__label {
   display: block;
   font-family: var(--font-neue);
@@ -220,7 +216,7 @@ h3 {
   line-height: 0.92;
 }
 
-/* ---------- Botões (pílulas do Figma) ---------- */
+/* ---------- Botões ---------- */
 
 .pill {
   display: inline-flex;
@@ -305,6 +301,28 @@ h3 {
     padding-top: 0;
     margin-bottom: 20px;
   }
+}
+
+/* ---------- Entrada dos blocos com a rolagem  ---------- */
+
+html .reveal {
+  opacity: 0;
+  translate: 0 32px;
+  filter: blur(6px);
+  transition:
+    opacity 0.9s var(--ease) var(--reveal-delay, 0ms),
+    translate 0.9s var(--ease) var(--reveal-delay, 0ms),
+    filter 0.9s var(--ease) var(--reveal-delay, 0ms);
+}
+
+html .reveal.reveal--start {
+  transition: none;
+}
+
+html .reveal.is-visible {
+  opacity: 1;
+  translate: none;
+  filter: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
