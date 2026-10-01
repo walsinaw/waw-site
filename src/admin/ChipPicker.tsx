@@ -6,8 +6,6 @@ interface ChipPickerProps {
 
 const same = (a: string, b: string) => a.toLowerCase() === b.toLowerCase();
 
-// Seleção múltipla em chips. Valores antigos que não estão na lista
-// (ex.: "DESIGN" vindo do formulário do site) continuam aparecendo e podem ser desmarcados.
 export default function ChipPicker({ options, selected, onChange }: ChipPickerProps) {
   const extras = selected.filter((value) => !options.some((option) => same(option, value)));
 

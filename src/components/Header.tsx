@@ -11,7 +11,6 @@ const links = [
 ];
 
 interface HeaderProps {
-  /** Em páginas sem o hero vermelho, o menu já começa no estado "rolado". */
   alwaysScrolled?: boolean;
 }
 

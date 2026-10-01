@@ -80,9 +80,7 @@ export default function Contact({ selectedServices, onChangeServices }: ContactP
     if (values.message.trim()) lines.push(`*Projeto:* ${values.message.trim()}`);
 
     const url = `https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(lines.join('\n'))}`;
-    // Abre o WhatsApp na hora (antes de qualquer espera, para o navegador não bloquear a janela)
     window.open(url, '_blank', 'noopener');
-    // ...e registra o lead no painel /admin → Clientes.
     createLead({
       name: values.name.trim(),
       company: values.company.trim(),

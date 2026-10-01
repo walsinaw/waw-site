@@ -1,5 +1,3 @@
-// Fundo animado com gradiente e granulado (React Bits — Grainient, variante JS-CSS).
-// https://reactbits.dev/backgrounds/grainient
 import { useEffect, useRef } from 'react';
 import { Mesh, Program, Renderer, Triangle } from 'ogl';
 import './Grainient.css';
@@ -115,7 +113,6 @@ interface GrainientContext {
   mesh: Mesh;
 }
 
-// Mantém renderer/program vivos entre renders para o segundo efeito só atualizar os uniforms.
 const ctxMap = new WeakMap<HTMLDivElement, GrainientContext>();
 
 export interface GrainientProps {

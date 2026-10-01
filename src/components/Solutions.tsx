@@ -3,7 +3,6 @@ import checkIcon from '../assets/check.svg';
 import Arrow from './Arrow';
 import './Solutions.css';
 
-// Seção "Nossas Soluções" do Figma (textos e hover iguais; tamanhos reduzidos).
 export default function Solutions() {
   return (
     <section className="section solutions" id="servicos">

@@ -1,8 +1,6 @@
 import { splitCategories, type Project } from '../lib/types';
 import './Portfolio.css';
 
-// Card do portfólio: imagem quadrada em preto e branco; no hover ganha cor,
-// mostra o nome, as especialidades e o círculo "ver" (quando tem link).
 const linkLabels = { behance: 'ver no Behance', site: 'ver o site', instagram: 'ver no Instagram', none: '' };
 
 export default function ProjectCard({ project }: { project: Project }) {

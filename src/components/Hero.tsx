@@ -2,7 +2,6 @@ import Arrow from './Arrow';
 import Grainient from './Grainient';
 import './Hero.css';
 
-// Quem pede menos movimento no sistema vê o gradiente parado.
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export default function Hero() {

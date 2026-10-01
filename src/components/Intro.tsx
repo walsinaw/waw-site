@@ -4,7 +4,7 @@ import './sections.css';
 
 const facts = [
   { value: '3 anos', label: 'em comunicação digital' },
-  { value: '3 frentes', label: 'design, web e tráfego pago' },
+  { value: '3 frentes', label: 'design, desenvolvimento e marketing' },
   { value: '1 equipe', label: 'do briefing à entrega' },
 ];
 
@@ -47,7 +47,7 @@ export default function Intro() {
             descobrirem o próprio jeito de aparecer: da estratégia ao post, do posicionamento ao site no ar.
           </p>
           <p className="lead">
-            Criei a WAW para ser o lugar onde estratégia e criatividade andam juntas. Acompanho cada projeto de
+            Criei a WAW pra ser o lugar onde estratégia e criatividade andam juntas. Acompanho cada projeto de
             perto e conto com uma equipe bem preparada em design, conteúdo, tráfego e desenvolvimento, para que
             cada entrega tenha cuidado do começo ao fim.
           </p>
