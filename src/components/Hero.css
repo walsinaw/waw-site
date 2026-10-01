@@ -3,11 +3,9 @@
   display: flex;
   min-height: max(640px, 100svh);
   overflow: hidden;
-  /* aparece só se o navegador não tiver WebGL */
   background: radial-gradient(120% 90% at 70% 30%, var(--red), #09040a 70%);
 }
 
-/* Fundo animado (Grainient) atrás do conteúdo */
 .hero__bg {
   position: absolute;
   inset: 0;
@@ -29,7 +27,6 @@
   animation: hero-in 1s var(--ease) 0.1s both;
 }
 
-/* Proporções do Figma (180px): linha 1 a 18px do kicker, linha 2 sobe 65px */
 .hero__title {
   margin-top: 0.1em;
   font-family: var(--font-neue);
@@ -42,10 +39,9 @@
   animation: hero-in 1.1s var(--ease) 0.2s both;
 }
 
-/* Com "UAU" na Pirso, o Figma usa a altura de linha normal nesta linha */
 .hero__line--second {
-  margin-top: -0.361em;
-  line-height: normal;
+  margin-top: 0;
+  line-height: 1.1;
   animation-delay: 0.3s;
 }
 
@@ -103,7 +99,6 @@
 }
 
 @media (max-width: 860px) {
-  /* "O EXTRAORDINÁRIO" sempre numa linha só */
   .hero__title {
     font-size: min(9.6vw, 56px);
   }
