@@ -2,11 +2,17 @@
 // Usado pelo site (cada página atualiza as tags) e pelo build (sitemap, robots.txt, llms.txt).
 // Sem imports: este arquivo também roda no vite.config.ts.
 
-/** Endereço enquanto o .com.br não chega. Na Vercel, a variável VITE_SITE_URL substitui este valor. */
-export const DEFAULT_SITE_URL = 'https://wawstudio.vercel.app';
+/** Endereço oficial do site. Na Vercel, a variável VITE_SITE_URL substitui este valor, se precisar. */
+export const DEFAULT_SITE_URL = 'https://wawstudio.com.br';
 
 /** Projeto do Microsoft Clarity (o código é público, aparece no site de qualquer jeito). */
 export const CLARITY_ID = 'yqnylezmxb';
+
+/** Google Analytics 4 (também serve para verificar o site no Search Console). */
+export const GA_ID = 'G-BT86QHCHXZ';
+
+/** Código do Google Search Console (o mesmo vale para o registro TXT no DNS do domínio). */
+export const GOOGLE_SITE_VERIFICATION = 'XFSjT-XkP6asotiKFtC6SnedjhEDTGAk6VbewOxzHj0';
 
 export const business = {
   name: 'WAW Studio',

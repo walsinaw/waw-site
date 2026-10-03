@@ -4,13 +4,15 @@
 // Variáveis (no .env ou na Vercel):
 //   VITE_SITE_URL                   endereço final do site (ex.: https://wawstudio.com.br)
 //   VITE_CLARITY_ID                 troca o projeto do Microsoft Clarity (padrão: CLARITY_ID em seo.ts)
-//   VITE_GOOGLE_SITE_VERIFICATION   código da tag HTML do Google Search Console
+//   VITE_GA_ID                      troca a propriedade do Google Analytics (padrão: GA_ID em seo.ts)
+//   VITE_GOOGLE_SITE_VERIFICATION   troca o código do Google Search Console (padrão: GOOGLE_SITE_VERIFICATION em seo.ts)
 import type { Plugin } from 'vite';
-import { business, CLARITY_ID, DEFAULT_SITE_URL, pages } from './src/data/seo.ts';
+import { business, CLARITY_ID, DEFAULT_SITE_URL, GA_ID, GOOGLE_SITE_VERIFICATION, pages } from './src/data/seo.ts';
 
 interface SeoEnv {
   VITE_SITE_URL?: string;
   VITE_CLARITY_ID?: string;
+  VITE_GA_ID?: string;
   VITE_GOOGLE_SITE_VERIFICATION?: string;
 }
 
@@ -85,8 +87,23 @@ export default function seo(env: SeoEnv): Plugin {
     `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`,
   ];
 
-  if (env.VITE_GOOGLE_SITE_VERIFICATION) {
-    headTags.push(`<meta name="google-site-verification" content="${escape(env.VITE_GOOGLE_SITE_VERIFICATION)}" />`);
+  const verification = env.VITE_GOOGLE_SITE_VERIFICATION || GOOGLE_SITE_VERIFICATION;
+  if (verification) {
+    headTags.push(`<meta name="google-site-verification" content="${escape(verification)}" />`);
+  }
+  const gaId = env.VITE_GA_ID || GA_ID;
+  if (gaId) {
+    // A tag do gtag.js fica sempre no HTML (o Search Console usa ela para verificar o site),
+    // mas só envia dados fora do /admin e fora do localhost.
+    headTags.push(`<script async src="https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaId)}"></script>`);
+    headTags.push(`<script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      if (!location.pathname.startsWith('/admin') && !/^(localhost|127\\.0\\.0\\.1)$/.test(location.hostname)) {
+        gtag('js', new Date());
+        gtag('config', ${JSON.stringify(gaId)});
+      }
+    </script>`);
   }
   const clarityId = env.VITE_CLARITY_ID || CLARITY_ID;
   if (clarityId) {
