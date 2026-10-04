@@ -1,4 +1,5 @@
 import { contact, footerServices } from '../data/content';
+import { business } from '../data/seo';
 import Logo from './Logo';
 import { Link } from 'react-router-dom';
 import CookieBanner from './CookieBanner';
@@ -51,6 +52,12 @@ export default function Footer() {
                 Estratégia, criatividade e tecnologia para marcas que querem ser lembradas.
               </p>
               <p className="footer__about2">O extraordinário começa com um UAU.</p>
+              <p className="footer__location">
+                {business.city}/{business.region} · atendimento online para todo o Brasil e o exterior
+              </p>
+              <a className="footer__review" href={business.googleReviewUrl} target="_blank" rel="noreferrer">
+                <span aria-hidden="true">★</span> Avalie a WAW no Google
+              </a>
               <ul className="footer__socials">
                 {socials.map((social) => (
                   <li key={social.label}>

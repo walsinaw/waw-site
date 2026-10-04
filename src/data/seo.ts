@@ -18,12 +18,19 @@ export const business = {
   name: 'WAW Studio',
   slogan: 'O extraordinário começa com um UAU.',
   description:
-    'Studio de criatividade e crescimento digital: identidade visual, social media, audiovisual, sites e sistemas, comunicação e tráfego pago.',
+    'Agência de marketing e studio criativo de Pelotas/RS, com atendimento online para todo o Brasil e o exterior: identidade visual, social media, audiovisual, sites e sistemas, comunicação e tráfego pago.',
   founder: 'Julia Alsina',
   phone: '+55 53 98152-6416',
   whatsappUrl: 'https://wa.me/5553981526416',
   instagramUrl: 'https://www.instagram.com/wawstudio.br/',
   behanceUrl: 'https://www.behance.net/walsinaw',
+  /** Atende online e no cliente (sem endereço aberto ao público). */
+  city: 'Pelotas',
+  region: 'RS',
+  regionName: 'Rio Grande do Sul',
+  /** Perfil da Empresa no Google (Maps) e link para pedir avaliação. */
+  googleMapsUrl: 'https://maps.google.com/?cid=13187970864247851813',
+  googleReviewUrl: 'https://g.page/r/CSXLsc-gFQW3EAE/review',
   services: [
     {
       name: 'Design',
@@ -55,9 +62,9 @@ export interface PageMeta {
 export const pages: PageMeta[] = [
   {
     path: '/',
-    title: 'WAW Studio — O extraordinário começa com um UAU.',
+    title: 'WAW Studio | Agência de marketing em Pelotas/RS',
     description:
-      'WAW Studio: studio de criatividade e crescimento digital. Identidade visual, social media, sites e tráfego pago para marcas que querem ir além.',
+      'WAW Studio: agência de marketing e studio criativo em Pelotas/RS, atendendo todo o Brasil. Identidade visual, social media, sites e tráfego pago.',
   },
   {
     path: '/portfolio',
@@ -67,21 +74,21 @@ export const pages: PageMeta[] = [
   },
   {
     path: '/servicos/design',
-    title: 'Design: identidade visual e conteúdo — WAW Studio',
+    title: 'Identidade visual e design em Pelotas/RS — WAW Studio',
     description:
-      'Identidade visual, rebranding, design para redes sociais e campanhas: posts, carrosséis, stories, ebooks e materiais digitais com a cara da sua marca.',
+      'Identidade visual, rebranding e design para redes sociais e campanhas, em Pelotas/RS e online para todo o Brasil. Posts, carrosséis, stories e ebooks.',
   },
   {
     path: '/servicos/web',
-    title: 'Criação de sites e sistemas — WAW Studio',
+    title: 'Criação de sites e sistemas em Pelotas/RS — WAW Studio',
     description:
-      'Sites, landing pages, lojas virtuais, sistemas e UX/UI para web: presença digital que funciona para quem navega e trabalha pelo seu negócio.',
+      'Sites, landing pages, lojas virtuais, sistemas e UX/UI para web, em Pelotas/RS e online para todo o Brasil. Presença digital que trabalha pelo seu negócio.',
   },
   {
     path: '/servicos/ads',
-    title: 'Tráfego pago e marketing — WAW Studio',
+    title: 'Tráfego pago e marketing digital em Pelotas/RS — WAW Studio',
     description:
-      'Gestão de tráfego pago no Meta Ads e Google Ads, conteúdo e performance para transformar alcance em resultado.',
+      'Gestão de tráfego pago no Meta Ads e Google Ads, conteúdo e performance, em Pelotas/RS e online para todo o Brasil.',
   },
   {
     path: '/privacidade',

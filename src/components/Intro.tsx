@@ -20,12 +20,12 @@ export default function Intro() {
         </h2>
         <div className="intro__text">
           <p className="lead">
-            A WAW Studio une estratégia, criatividade e tecnologia para construir marcas que têm algo a dizer,
-            experiências que despertam interesse e projetos que fazem sentido para o negócio.
+            A WAW Studio é uma agência de marketing e studio criativo de Pelotas/RS que atende marcas de todo o Brasil.
+            Unimos estratégia, criatividade e tecnologia para construir marcas que têm algo a dizer, experiências que
+            despertam interesse e projetos que fazem sentido para o negócio.
           </p>
           <p className="lead">
-            Do primeiro conceito ao último detalhe, pensamos em como sua marca pode ser percebida, lembrada e
-            escolhida.
+            Do primeiro conceito ao último detalhe, pensamos em como sua marca pode ser percebida, lembrada e escolhida.
           </p>
         </div>
       </div>
@@ -59,13 +59,13 @@ export default function Intro() {
             Quem está à frente da <b>WAW?</b>
           </h2>
           <p className="lead">
-            Sou a Ju, fundadora da WAW! Há 3 anos trabalho com comunicação digital, ajudando marcas a
-            descobrirem o próprio jeito de aparecer: da estratégia ao post, do posicionamento ao site no ar.
+            Sou a Ju, fundadora da WAW! Há 3 anos trabalho com comunicação digital, ajudando marcas a descobrirem o
+            próprio jeito de aparecer: da estratégia ao post, do posicionamento ao site no ar.
           </p>
           <p className="lead">
-            Criei a WAW pra ser o lugar onde estratégia e criatividade andam juntas. Acompanho cada projeto de
-            perto e conto com uma equipe bem preparada em design, conteúdo, tráfego e desenvolvimento, para que
-            cada entrega tenha cuidado do começo ao fim.
+            Criei a WAW pra ser o lugar onde estratégia e criatividade andam juntas. Acompanho cada projeto de perto e
+            conto com uma equipe bem preparada em design, conteúdo, tráfego e desenvolvimento, para que cada entrega
+            tenha cuidado do começo ao fim.
           </p>
 
           <dl className="founder__facts">

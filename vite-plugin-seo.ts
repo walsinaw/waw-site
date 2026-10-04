@@ -28,7 +28,9 @@ export default function seo(env: SeoEnv): Plugin {
     '@context': 'https://schema.org',
     '@graph': [
       {
-        '@type': 'Organization',
+        // Negócio local (o mesmo do Perfil da Empresa no Google): sede em Pelotas/RS, sem endereço
+        // aberto ao público, atendendo online todo o Brasil.
+        '@type': 'ProfessionalService',
         '@id': `${siteUrl}/#organizacao`,
         name: business.name,
         url: `${siteUrl}/`,
@@ -37,9 +39,20 @@ export default function seo(env: SeoEnv): Plugin {
         slogan: business.slogan,
         description: business.description,
         telephone: business.phone,
-        areaServed: { '@type': 'Country', name: 'Brasil' },
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: business.city,
+          addressRegion: business.region,
+          addressCountry: 'BR',
+        },
+        areaServed: [
+          { '@type': 'City', name: `${business.city}, ${business.region}` },
+          { '@type': 'State', name: business.regionName },
+          { '@type': 'Country', name: 'Brasil' },
+        ],
+        hasMap: business.googleMapsUrl,
         founder: { '@type': 'Person', name: business.founder, jobTitle: 'Fundadora' },
-        sameAs: [business.instagramUrl, business.behanceUrl],
+        sameAs: [business.googleMapsUrl, business.instagramUrl, business.behanceUrl],
         contactPoint: {
           '@type': 'ContactPoint',
           telephone: business.phone,
@@ -147,7 +160,7 @@ Sitemap: ${siteUrl}/sitemap.xml
 
 > ${business.description}
 
-A WAW Studio é um studio brasileiro fundado por ${business.founder}, que trabalha há 3 anos com comunicação digital. Une estratégia, criatividade e tecnologia em projetos de marca, conteúdo e presença digital, com uma equipe de design, conteúdo, tráfego e desenvolvimento.
+A WAW Studio é uma agência de marketing e studio criativo de ${business.city}/${business.region}, fundada por ${business.founder}, que trabalha há 3 anos com comunicação digital. Atende online clientes de todo o Brasil e do exterior. Une estratégia, criatividade e tecnologia em projetos de marca, conteúdo e presença digital, com uma equipe de design, conteúdo, tráfego e desenvolvimento.
 
 ## Serviços
 
@@ -162,6 +175,8 @@ ${pages.map((page) => `- [${page.title}](${siteUrl}${page.path}): ${page.descrip
 - WhatsApp: ${business.whatsappUrl}
 - Instagram: ${business.instagramUrl}
 - Behance: ${business.behanceUrl}
+- Google Maps (Perfil da Empresa): ${business.googleMapsUrl}
+- Localização: ${business.city}/${business.region}, Brasil (atendimento online e no cliente)
 `,
   };
 
@@ -171,7 +186,11 @@ ${pages.map((page) => `- [${page.title}](${siteUrl}${page.path}): ${page.descrip
       // O logo do topo é o maior elemento da primeira tela no celular: o navegador já começa a baixá-lo.
       const logo = Object.keys(ctx.bundle ?? {}).find((file) => /assets\/logo-waw-[\w-]+\.webp$/.test(file));
       const preload = logo ? [`<link rel="preload" as="image" href="/${logo}" fetchpriority="high" />`] : [];
-      return html.replace('</head>', `    ${[...preload, ...headTags].join('\n    ')}\n  </head>`);
+      // Título e descrição fixos do HTML vêm de seo.ts (quem não roda JavaScript lê só estes).
+      return html
+        .replace(/<title>[^<]*<\/title>/, `<title>${escape(home.title)}</title>`)
+        .replace(/<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${escape(home.description)}" />`)
+        .replace('</head>', `    ${[...preload, ...headTags].join('\n    ')}\n  </head>`);
     },
     // No npm run dev os arquivos também respondem, para dar para conferir.
     configureServer(server) {

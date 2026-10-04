@@ -31,6 +31,35 @@
   color: var(--muted);
 }
 
+.footer__location {
+  max-width: 300px;
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Link para deixar avaliação no Perfil da Empresa no Google */
+.footer__review {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 9px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.footer__review span {
+  color: var(--red-bright);
+}
+
+.footer__review:hover {
+  border-color: var(--red-bright);
+}
+
 .footer__heading {
   margin-bottom: 14px;
   font-size: 11px;

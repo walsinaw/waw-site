@@ -2,6 +2,8 @@ import { useState, type FormEvent } from 'react';
 import { contact, services, type ServiceId } from '../data/content';
 import whatsappIcon from '../assets/whatsapp.svg';
 import instagramIcon from '../assets/instagram.svg';
+import pinIcon from '../assets/pin.svg';
+import { business } from '../data/seo';
 import { createLead } from '../lib/api';
 import Arrow from './Arrow';
 import './Contact.css';
@@ -126,6 +128,15 @@ export default function Contact({ selectedServices, onChangeServices }: ContactP
                 <span className="contact__channel-value">{contact.instagramHandle}</span>
               </span>
             </a>
+            <a className="contact__channel" href={business.googleMapsUrl} target="_blank" rel="noreferrer">
+              <img src={pinIcon} alt="" className="contact__icon" />
+              <span>
+                <span className="contact__channel-label">Onde estamos</span>
+                <span className="contact__channel-value">
+                  {business.city}/{business.region} · atendemos todo o Brasil
+                </span>
+              </span>
+            </a>
           </div>
         </div>
 
@@ -193,9 +204,7 @@ export default function Contact({ selectedServices, onChangeServices }: ContactP
               <Arrow variant="small" direction="right" className="pill__arrow" />
             </button>
             <p className="contact__note" role="status">
-              {sent
-                ? 'Abrimos o WhatsApp com a sua mensagem. É só enviar!'
-                : 'Sua mensagem já vai pronta no WhatsApp.'}
+              {sent ? 'Abrimos o WhatsApp com a sua mensagem. É só enviar!' : 'Sua mensagem já vai pronta no WhatsApp.'}
             </p>
           </div>
         </form>
