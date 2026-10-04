@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import PortfolioPage from './pages/PortfolioPage';
 import ServicePage from './pages/ServicePage';
 import PrivacyPage from './pages/PrivacyPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 // O painel só é baixado por quem abre /admin.
 const AdminApp = lazy(() => import('./admin/AdminApp'));
@@ -26,7 +27,7 @@ createRoot(document.getElementById('root')!).render(
             </Suspense>
           }
         />
-        <Route path="*" element={<HomePage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

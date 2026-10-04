@@ -21,15 +21,12 @@ export default function Connected() {
       </div>
 
       <div className="container">
-        <p className="connected__equation" aria-label={connected.pillars.join(' + ')}>
+        {/* Leitores de tela leem o texto como está na tela: "Estratégia + Design + …" */}
+        <p className="connected__equation">
           {connected.pillars.map((pillar, index) => (
             <Fragment key={pillar}>
-              {index > 0 && (
-                <span className="connected__plus" aria-hidden="true">
-                  +
-                </span>
-              )}
-              <span aria-hidden="true">{pillar}</span>
+              {index > 0 && <span className="connected__plus">+</span>}
+              <span>{pillar}</span>
             </Fragment>
           ))}
         </p>

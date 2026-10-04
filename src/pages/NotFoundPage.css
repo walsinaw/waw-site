@@ -1,0 +1,40 @@
+.not-found {
+  display: flex;
+  align-items: center;
+  min-height: 80svh;
+  padding-top: calc(var(--section-y) + 40px);
+}
+
+/* "404" gigante e apagado, no vermelho da WAW */
+.not-found__code {
+  font-family: var(--font-pirso);
+  font-weight: 600;
+  font-size: clamp(110px, 18vw, 260px);
+  line-height: 0.85;
+  color: var(--red);
+}
+
+.not-found .display {
+  max-width: 900px;
+  margin-top: clamp(20px, 3vw, 40px);
+}
+
+.not-found__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 28px;
+  margin-top: 36px;
+}
+
+.not-found__link {
+  font-size: 16px;
+  text-decoration: underline;
+  text-decoration-color: var(--red-bright);
+  text-underline-offset: 4px;
+  transition: color 0.2s;
+}
+
+.not-found__link:hover {
+  color: var(--red-bright);
+}

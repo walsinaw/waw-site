@@ -1,5 +1,7 @@
 import julia from '../assets/julia-alsina.webp';
+import juliaSmall from '../assets/julia-alsina-sm.webp';
 import frame from '../assets/moldura.webp';
+import frameSmall from '../assets/moldura-sm.webp';
 import './sections.css';
 
 const facts = [
@@ -31,8 +33,22 @@ export default function Intro() {
       <div className="container founder">
         <figure className="founder__photo">
           <span className="founder__picture">
-            <img src={julia} alt="Julia Alsina, CEO da WAW Studio" loading="lazy" />
-            <img src={frame} alt="" className="founder__frame" loading="lazy" />
+            {/* Versões menores para o celular; o navegador escolhe pelo tamanho e pela densidade da tela */}
+            <img
+              src={julia}
+              srcSet={`${juliaSmall} 700w, ${julia} 1000w`}
+              sizes="(max-width: 860px) min(86vw, 362px), 520px"
+              alt="Julia Alsina, CEO da WAW Studio"
+              loading="lazy"
+            />
+            <img
+              src={frame}
+              srcSet={`${frameSmall} 760w, ${frame} 900w`}
+              sizes="(max-width: 860px) min(98vw, 412px), 590px"
+              alt=""
+              className="founder__frame"
+              loading="lazy"
+            />
           </span>
           <figcaption>Julia Alsina, fundadora da WAW</figcaption>
         </figure>

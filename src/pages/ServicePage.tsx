@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Header from '../components/Header';
 import Contact from '../components/Contact';
 import Footer from '../components/Footer';
@@ -8,6 +8,7 @@ import { services, type ServiceId } from '../data/content';
 import { servicePages, type Block } from '../data/servicePages';
 import { useScrollReveal } from '../lib/useScrollReveal';
 import { usePageMeta } from '../lib/usePageMeta';
+import NotFoundPage from './NotFoundPage';
 import './ServicePage.css';
 
 /** "texto **destaque**" → texto <b>destaque</b> */
@@ -261,7 +262,7 @@ function ServiceContent({ id }: { id: ServiceId }) {
 
 export default function ServicePage() {
   const { slug } = useParams();
-  if (!slug || !(slug in servicePages)) return <Navigate to="/#servicos" replace />;
+  if (!slug || !(slug in servicePages)) return <NotFoundPage />;
   // key: trocar de /servicos/web para /servicos/ads recomeça a página do zero
   return <ServiceContent key={slug} id={slug as ServiceId} />;
 }

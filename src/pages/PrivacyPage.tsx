@@ -126,7 +126,7 @@ export default function PrivacyPage() {
                   <strong>Supabase:</strong> banco de dados onde ficam salvos os contatos do formulário.
                 </li>
                 <li>
-                  <strong>Google:</strong> Google Analytics (com o seu aceite) e Google Fonts (fontes do site).
+                  <strong>Google:</strong> Google Analytics (com o seu aceite).
                 </li>
                 <li>
                   <strong>Microsoft:</strong> Microsoft Clarity (com o seu aceite).

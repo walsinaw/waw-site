@@ -167,8 +167,11 @@ ${pages.map((page) => `- [${page.title}](${siteUrl}${page.path}): ${page.descrip
 
   return {
     name: 'waw-seo',
-    transformIndexHtml(html) {
-      return html.replace('</head>', `    ${headTags.join('\n    ')}\n  </head>`);
+    transformIndexHtml(html, ctx) {
+      // O logo do topo é o maior elemento da primeira tela no celular: o navegador já começa a baixá-lo.
+      const logo = Object.keys(ctx.bundle ?? {}).find((file) => /assets\/logo-waw-[\w-]+\.webp$/.test(file));
+      const preload = logo ? [`<link rel="preload" as="image" href="/${logo}" fetchpriority="high" />`] : [];
+      return html.replace('</head>', `    ${[...preload, ...headTags].join('\n    ')}\n  </head>`);
     },
     // No npm run dev os arquivos também respondem, para dar para conferir.
     configureServer(server) {
