@@ -37,7 +37,7 @@
 
 .privacy__body h2 {
   margin-bottom: 16px;
-  font-family: var(--font-neue);
+  font-family: var(--font-display);
   font-weight: 500;
   font-size: clamp(22px, 2vw, 28px);
   line-height: 1.2;

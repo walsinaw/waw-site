@@ -242,7 +242,7 @@
   }
 
   .header__link {
-    font-family: var(--font-neue);
+    font-family: var(--font-display);
     font-size: 44px;
     line-height: 1.2;
   }

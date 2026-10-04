@@ -21,7 +21,7 @@
 }
 
 .hero__kicker {
-  font-family: var(--font-neue);
+  font-family: var(--font-display);
   font-size: clamp(15px, 1.35vw, 20px);
   line-height: 1.1;
   animation: hero-in 1s var(--ease) 0.1s both;
@@ -29,7 +29,7 @@
 
 .hero__title {
   margin-top: 0.1em;
-  font-family: var(--font-neue);
+  font-family: var(--font-display);
   font-size: clamp(42px, 7.4vw, 116px);
 }
 
@@ -77,7 +77,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-family: var(--font-neue);
+  font-family: var(--font-display);
   font-size: 17px;
 }
 

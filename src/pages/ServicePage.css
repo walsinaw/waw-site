@@ -1,5 +1,5 @@
 /* Páginas de nicho (/servicos/…): mesma linguagem da home — rótulo à esquerda,
-   títulos Neue Haas + Pirso, linhas finas, um bloco claro e chamadas vermelhas. */
+   títulos Inter Tight + Pirso, linhas finas, um bloco claro e chamadas vermelhas. */
 
 .svc b {
   font-family: var(--font-pirso);
@@ -58,7 +58,7 @@
 .svc-hero__title {
   max-width: 1100px;
   margin-top: 22px;
-  font-family: var(--font-neue);
+  font-family: var(--font-display);
   font-weight: 400;
   font-size: clamp(40px, 6.2vw, 96px);
   line-height: 1;
@@ -95,7 +95,7 @@
 }
 
 .svc-hero__more {
-  font-family: var(--font-neue);
+  font-family: var(--font-display);
   font-size: 17px;
   transition: color 0.25s;
 }
@@ -131,7 +131,7 @@
 
 .svc-subtitle {
   margin-top: 14px;
-  font-family: var(--font-neue);
+  font-family: var(--font-display);
   font-size: clamp(22px, 2.4vw, 34px);
   line-height: 1.15;
   color: var(--red-bright);
@@ -149,7 +149,7 @@
 .svc-big li {
   padding: 16px 0;
   border-bottom: 1px solid var(--line);
-  font-family: var(--font-neue);
+  font-family: var(--font-display);
   font-size: clamp(22px, 2.4vw, 34px);
   line-height: 1.15;
   transition: color 0.3s, padding-left 0.4s var(--ease);
@@ -187,7 +187,7 @@
 .svc-tags--large li {
   padding: 10px 18px;
   border-color: rgba(222, 4, 12, 0.6);
-  font-family: var(--font-neue);
+  font-family: var(--font-display);
   font-size: clamp(15px, 1.4vw, 20px);
   color: var(--white);
 }
@@ -342,7 +342,7 @@
   justify-content: space-between;
   gap: 24px;
   padding: 24px 0;
-  font-family: var(--font-neue);
+  font-family: var(--font-display);
   font-size: clamp(19px, 1.8vw, 25px);
   line-height: 1.2;
   list-style: none;
@@ -439,12 +439,12 @@
 }
 
 .svc-others__label {
-  font-family: var(--font-neue);
+  font-family: var(--font-display);
   font-size: 12px;
 }
 
 .svc-others__title {
-  font-family: var(--font-neue);
+  font-family: var(--font-display);
   font-size: clamp(20px, 2vw, 26px);
   line-height: 1.1;
 }

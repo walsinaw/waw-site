@@ -24,7 +24,7 @@
 
 .solutions__intro-text {
   margin-top: 4px;
-  font-family: var(--font-neue);
+  font-family: var(--font-display);
   font-size: clamp(13px, 1.1vw, 16px);
   line-height: 1.15;
 }
@@ -81,7 +81,7 @@
   padding: 50px 16px 0;
   border-radius: 11px;
   background: var(--red);
-  font-family: var(--font-neue);
+  font-family: var(--font-display);
   line-height: 1.1;
   transition: transform 0.45s var(--ease);
 }
@@ -179,7 +179,7 @@
 
 .solutions__cta-text {
   margin: 6px 0 28px;
-  font-family: var(--font-neue);
+  font-family: var(--font-display);
   font-size: clamp(15px, 1.2vw, 17px);
 }
 
