@@ -5,10 +5,10 @@
 /** Endereço oficial do site. Na Vercel, a variável VITE_SITE_URL substitui este valor, se precisar. */
 export const DEFAULT_SITE_URL = 'https://wawstudio.com.br';
 
-/** Projeto do Microsoft Clarity (o código é público, aparece no site de qualquer jeito). */
+/** Projeto do Microsoft Clarity (carrega só depois do aceite no aviso de cookies). */
 export const CLARITY_ID = 'yqnylezmxb';
 
-/** Google Analytics 4 (também serve para verificar o site no Search Console). */
+/** Google Analytics 4 (carrega só depois do aceite no aviso de cookies). */
 export const GA_ID = 'G-BT86QHCHXZ';
 
 /** Código do Google Search Console (o mesmo vale para o registro TXT no DNS do domínio). */
@@ -48,6 +48,8 @@ export interface PageMeta {
   path: string;
   title: string;
   description: string;
+  /** Importância no sitemap (0 a 1). Padrão: 1 na home, 0.8 nas outras. */
+  priority?: number;
 }
 
 export const pages: PageMeta[] = [
@@ -80,6 +82,13 @@ export const pages: PageMeta[] = [
     title: 'Tráfego pago e marketing — WAW Studio',
     description:
       'Gestão de tráfego pago no Meta Ads e Google Ads, conteúdo e performance para transformar alcance em resultado.',
+  },
+  {
+    path: '/privacidade',
+    title: 'Política de privacidade — WAW Studio',
+    description:
+      'Como a WAW Studio coleta, usa e protege os seus dados no site e no formulário de contato, de acordo com a LGPD.',
+    priority: 0.3,
   },
 ];
 

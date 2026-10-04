@@ -25,6 +25,7 @@ const SELECTOR = [
   '.svc-others__card',
   '.svc-band__text',
   '.svc-closing__text',
+  '.privacy__body > section',
 ].join(', ');
 
 // Os topos (hero) já têm a própria animação de entrada.
@@ -55,7 +56,8 @@ export function useScrollReveal() {
           io.unobserve(entry.target);
         }
       },
-      { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
+      // threshold 0: entra assim que o topo aparece (blocos muito altos também)
+      { rootMargin: '0px 0px -8% 0px', threshold: 0 },
     );
 
     const seen = new WeakSet<Element>();

@@ -91,30 +91,34 @@ export default function seo(env: SeoEnv): Plugin {
   if (verification) {
     headTags.push(`<meta name="google-site-verification" content="${escape(verification)}" />`);
   }
+  // Google Analytics e Microsoft Clarity só carregam depois do "Aceitar" no aviso de cookies (LGPD).
+  // window.wawAnalytics() é chamado aqui (visita de quem já aceitou) e pelo CookieBanner (no clique).
+  // Nunca no /admin (sessões do painel têm dados de clientes) nem no localhost (seus testes).
   const gaId = env.VITE_GA_ID || GA_ID;
-  if (gaId) {
-    // A tag do gtag.js fica sempre no HTML (o Search Console usa ela para verificar o site),
-    // mas só envia dados fora do /admin e fora do localhost.
-    headTags.push(`<script async src="https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaId)}"></script>`);
-    headTags.push(`<script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      if (!location.pathname.startsWith('/admin') && !/^(localhost|127\\.0\\.0\\.1)$/.test(location.hostname)) {
-        gtag('js', new Date());
-        gtag('config', ${JSON.stringify(gaId)});
-      }
-    </script>`);
-  }
   const clarityId = env.VITE_CLARITY_ID || CLARITY_ID;
-  if (clarityId) {
-    // Fora do /admin (sessões do painel têm dados de clientes) e fora do localhost (seus testes).
-    const id = JSON.stringify(clarityId);
+  if (gaId || clarityId) {
     headTags.push(`<script>
-      if (!location.pathname.startsWith('/admin') && !/^(localhost|127\\.0\\.0\\.1)$/.test(location.hostname)) {
-        (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script",${id});
-      }
+      window.wawAnalytics = function () {
+        if (window.__wawAnalytics || location.pathname.startsWith('/admin') || /^(localhost|127\\.0\\.0\\.1)$/.test(location.hostname)) return;
+        window.__wawAnalytics = true;
+        var ga = ${JSON.stringify(gaId ?? '')}, clarity = ${JSON.stringify(clarityId ?? '')};
+        if (ga) {
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(ga);
+          document.head.appendChild(s);
+          window.dataLayer = window.dataLayer || [];
+          window.gtag = function () { window.dataLayer.push(arguments); };
+          window.gtag('js', new Date());
+          window.gtag('config', ga);
+        }
+        if (clarity) {
+          (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script",clarity);
+        }
+      };
+      try { if (localStorage.getItem('waw-cookies') === 'aceito') window.wawAnalytics(); } catch (e) {}
     </script>`);
   }
 
@@ -127,7 +131,7 @@ ${pages
     (page) => `  <url>
     <loc>${siteUrl}${page.path}</loc>
     <lastmod>${today}</lastmod>
-    <priority>${page.path === '/' ? '1.0' : '0.8'}</priority>
+    <priority>${(page.priority ?? (page.path === '/' ? 1 : 0.8)).toFixed(1)}</priority>
   </url>`,
   )
   .join('\n')}

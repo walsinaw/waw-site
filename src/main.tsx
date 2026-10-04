@@ -5,6 +5,7 @@ import './styles/global.css';
 import HomePage from './pages/HomePage';
 import PortfolioPage from './pages/PortfolioPage';
 import ServicePage from './pages/ServicePage';
+import PrivacyPage from './pages/PrivacyPage';
 
 // O painel só é baixado por quem abre /admin.
 const AdminApp = lazy(() => import('./admin/AdminApp'));
@@ -16,6 +17,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/" element={<HomePage />} />
         <Route path="/portfolio" element={<PortfolioPage />} />
         <Route path="/servicos/:slug" element={<ServicePage />} />
+        <Route path="/privacidade" element={<PrivacyPage />} />
         <Route
           path="/admin/*"
           element={

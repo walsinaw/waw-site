@@ -1,0 +1,111 @@
+/* Página /privacidade: texto longo, então colunas estreitas e boa leitura */
+.privacy {
+  padding-top: calc(var(--section-y) + 40px);
+}
+
+.privacy__updated {
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* mesmas colunas do .split, mas o texto entra seção por seção na rolagem */
+.privacy__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 8fr);
+  column-gap: 32px;
+}
+
+.privacy__body {
+  grid-column: 2;
+  max-width: 720px;
+  margin-top: clamp(48px, 6vw, 80px);
+  font-size: 16px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.privacy__body section {
+  padding-top: 36px;
+  margin-top: 36px;
+  border-top: 1px solid var(--line);
+}
+
+.privacy__body section:first-child {
+  margin-top: 0;
+}
+
+.privacy__body h2 {
+  margin-bottom: 16px;
+  font-family: var(--font-neue);
+  font-weight: 500;
+  font-size: clamp(22px, 2vw, 28px);
+  line-height: 1.2;
+  color: var(--white);
+}
+
+.privacy__body h3 {
+  margin: 24px 0 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.privacy__body p + p {
+  margin-top: 14px;
+}
+
+.privacy__body ul {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.privacy__body li {
+  position: relative;
+  padding-left: 22px;
+}
+
+.privacy__body li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.7em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--red-bright);
+}
+
+.privacy__body strong {
+  color: var(--white);
+  font-weight: 600;
+}
+
+.privacy__body a {
+  color: var(--white);
+  text-decoration: underline;
+  text-decoration-color: var(--red-bright);
+  text-underline-offset: 3px;
+}
+
+.privacy__body a:hover {
+  color: var(--red-bright);
+}
+
+.privacy__cookies {
+  margin-top: 4px;
+}
+
+@media (max-width: 860px) {
+  .privacy__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .privacy__body {
+    grid-column: 1;
+  }
+}

@@ -1,5 +1,8 @@
 import { contact, footerServices } from '../data/content';
 import Logo from './Logo';
+import { Link } from 'react-router-dom';
+import CookieBanner from './CookieBanner';
+import { openCookiePreferences } from '../lib/cookies';
 import './Footer.css';
 
 const socials = [
@@ -36,77 +39,97 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer className="footer">
-      <div className="container">
-        <div className="footer__grid">
-          <div className="footer__brand">
-            <a href="/#inicio" aria-label="WAW Studio — voltar ao início">
-              <Logo variant="waw" alt="WAW Studio" className="footer__logo" />
-            </a>
-            <p className="footer__about">
-              Estratégia, criatividade e tecnologia para marcas que querem ser lembradas.
-            </p>
-            <p className="footer__about2">
-              O extraordinário começa com um UAU.
-            </p>
-            <ul className="footer__socials">
-              {socials.map((social) => (
-                <li key={social.label}>
-                  <a
-                    href={social.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="footer__social"
-                    aria-label={social.label}
-                    title={social.label}
-                  >
-                    {social.icon}
+    <>
+      <footer className="footer">
+        <div className="container">
+          <div className="footer__grid">
+            <div className="footer__brand">
+              <a href="/#inicio" aria-label="WAW Studio — voltar ao início">
+                <Logo variant="waw" alt="WAW Studio" className="footer__logo" />
+              </a>
+              <p className="footer__about">
+                Estratégia, criatividade e tecnologia para marcas que querem ser lembradas.
+              </p>
+              <p className="footer__about2">O extraordinário começa com um UAU.</p>
+              <ul className="footer__socials">
+                {socials.map((social) => (
+                  <li key={social.label}>
+                    <a
+                      href={social.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="footer__social"
+                      aria-label={social.label}
+                      title={social.label}
+                    >
+                      {social.icon}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <p className="footer__heading">Serviços</p>
+              <ul className="footer__list">
+                {footerServices.map((service) => (
+                  <li key={service}>
+                    <a href="/#servicos">{service}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <nav aria-label="Rodapé" className="footer__links">
+              <p className="footer__heading">Links</p>
+              <ul className="footer__list">
+                <li>
+                  <a href="/#sobre">Sobre</a>
+                </li>
+                <li>
+                  <a href="/#servicos">Serviços</a>
+                </li>
+                <li>
+                  <a href="/portfolio">Portfólio</a>
+                </li>
+                <li>
+                  <a href="/#contato">Orçamento</a>
+                </li>
+              </ul>
+            </nav>
+
+            <div>
+              <p className="footer__heading">Contato</p>
+              <ul className="footer__list">
+                <li>
+                  <a href={`https://wa.me/${contact.whatsappNumber}`} target="_blank" rel="noreferrer">
+                    {contact.whatsappDisplay}
                   </a>
                 </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <p className="footer__heading">Serviços</p>
-            <ul className="footer__list">
-              {footerServices.map((service) => (
-                <li key={service}>
-                  <a href="/#servicos">{service}</a>
+                <li>
+                  <a href={contact.instagramUrl} target="_blank" rel="noreferrer">
+                    {contact.instagramHandle}
+                  </a>
                 </li>
-              ))}
-            </ul>
+              </ul>
+            </div>
           </div>
 
-          <nav aria-label="Rodapé" className="footer__links">
-            <p className="footer__heading">Links</p>
-            <ul className="footer__list">
-              <li><a href="/#sobre">Sobre</a></li>
-              <li><a href="/#servicos">Serviços</a></li>
-              <li><a href="/portfolio">Portfólio</a></li>
-              <li><a href="/#contato">Orçamento</a></li>
-            </ul>
-          </nav>
-
-          <div>
-            <p className="footer__heading">Contato</p>
-            <ul className="footer__list">
-              <li>
-                <a href={`https://wa.me/${contact.whatsappNumber}`} target="_blank" rel="noreferrer">
-                  {contact.whatsappDisplay}
-                </a>
-              </li>
-              <li>
-                <a href={contact.instagramUrl} target="_blank" rel="noreferrer">
-                  {contact.instagramHandle}
-                </a>
-              </li>
-            </ul>
+          <div className="footer__copy">
+            <p>© {new Date().getFullYear()} WAW Studio</p>
+            <span className="footer__legal">
+              <Link to="/privacidade" className="footer__cookies">
+                Política de privacidade
+              </Link>
+              <button type="button" className="footer__cookies" onClick={openCookiePreferences}>
+                Preferências de cookies
+              </button>
+            </span>
           </div>
         </div>
-
-        <p className="footer__copy">© {new Date().getFullYear()} WAW Studio</p>
-      </div>
-    </footer>
+      </footer>
+      {/* O rodapé está em todas as páginas do site (e não no /admin): o aviso de cookies vem junto */}
+      <CookieBanner />
+    </>
   );
 }
