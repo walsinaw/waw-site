@@ -44,35 +44,45 @@ alter table public.team enable row level security;
 
 grant select, insert, update, delete on public.team to authenticated;
 
-drop policy if exists "admin gerencia equipe" on public.team;
-create policy "admin gerencia equipe" on public.team
-  for all to authenticated
-  using ((select private.is_admin()))
-  with check ((select private.is_admin()));
-
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('team', 'team', false, 5242880, array['image/jpeg', 'image/png', 'image/webp'])
 on conflict (id) do nothing;
 
-drop policy if exists "admin vê fotos da equipe" on storage.objects;
-create policy "admin vê fotos da equipe" on storage.objects
-  for select to authenticated
-  using (bucket_id = 'team' and (select private.is_admin()));
+-- Quem pode ver/editar funcionários e as fotos deles.
+-- Se a atualização 03 (logins com áreas) já foi rodada, usa a regra por área ("funcionarios");
+-- assim, rodar este arquivo de novo não tira o acesso dos logins de equipe.
+do $$
+declare
+  rule text := case
+    when to_regprocedure('private.can(text)') is null then '(select private.is_admin())'
+    else '(select private.can(''funcionarios''))'
+  end;
+begin
+  drop policy if exists "admin gerencia equipe" on public.team;
+  execute format(
+    'create policy "admin gerencia equipe" on public.team for all to authenticated using (%s) with check (%s)',
+    rule, rule);
 
-drop policy if exists "admin envia fotos da equipe" on storage.objects;
-create policy "admin envia fotos da equipe" on storage.objects
-  for insert to authenticated
-  with check (bucket_id = 'team' and (select private.is_admin()));
+  drop policy if exists "admin vê fotos da equipe" on storage.objects;
+  execute format(
+    'create policy "admin vê fotos da equipe" on storage.objects for select to authenticated using (bucket_id = ''team'' and %s)',
+    rule);
 
-drop policy if exists "admin troca fotos da equipe" on storage.objects;
-create policy "admin troca fotos da equipe" on storage.objects
-  for update to authenticated
-  using (bucket_id = 'team' and (select private.is_admin()));
+  drop policy if exists "admin envia fotos da equipe" on storage.objects;
+  execute format(
+    'create policy "admin envia fotos da equipe" on storage.objects for insert to authenticated with check (bucket_id = ''team'' and %s)',
+    rule);
 
-drop policy if exists "admin apaga fotos da equipe" on storage.objects;
-create policy "admin apaga fotos da equipe" on storage.objects
-  for delete to authenticated
-  using (bucket_id = 'team' and (select private.is_admin()));
+  drop policy if exists "admin troca fotos da equipe" on storage.objects;
+  execute format(
+    'create policy "admin troca fotos da equipe" on storage.objects for update to authenticated using (bucket_id = ''team'' and %s)',
+    rule);
+
+  drop policy if exists "admin apaga fotos da equipe" on storage.objects;
+  execute format(
+    'create policy "admin apaga fotos da equipe" on storage.objects for delete to authenticated using (bucket_id = ''team'' and %s)',
+    rule);
+end $$;
 
 select column_name from information_schema.columns
 where table_schema = 'public' and table_name = 'clients' and column_name in ('document', 'value_type', 'extra_payments')
