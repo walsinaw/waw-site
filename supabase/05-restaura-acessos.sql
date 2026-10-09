@@ -1,8 +1,4 @@
--- WAW Studio — correção 05: restaura as regras de acesso por área (logins de equipe).
--- Use quando um login de equipe parar de ver algo que deveria ver. Isso acontece se o
--- schema.sql ou o 02 forem rodados de novo depois do 03: eles voltam algumas regras para
--- "só administrador". Este arquivo põe tudo de volta no lugar.
--- Dashboard → SQL Editor → New query → colar → Run. Pode rodar quantas vezes quiser.
+-- WAW Studio — 05: restaura as regras de acesso por área
 
 drop policy if exists "logado vê publicados, admin vê todos" on public.projects;
 create policy "logado vê publicados, admin vê todos" on public.projects
@@ -92,7 +88,7 @@ create policy "equipe: pagamentos" on public.team_payments
   using ((select private.can('funcionarios')))
   with check ((select private.can('funcionarios')));
 
--- Conferência: nenhuma linha deve aparecer com "is_admin" (todas usam "can").
+-- Conferência
 select tablename, policyname, coalesce(qual, with_check) as regra
 from pg_policies
 where (schemaname = 'public' and tablename in ('projects', 'clients', 'team', 'team_payments'))

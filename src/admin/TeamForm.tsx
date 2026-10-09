@@ -17,7 +17,6 @@ interface TeamFormProps {
   member: TeamMemberWithPhoto | null;
   clients: Client[];
   payments: TeamPayment[];
-  /** Recarrega a lista quando um pagamento é registrado/apagado (sem fechar a janela) */
   onPaymentsChange: () => void;
   onClose: () => void;
   onSaved: () => void;
@@ -40,7 +39,6 @@ const valueLabels: Record<ContractType, string> = {
   avulso: 'Valor total (pagamento único)',
 };
 
-// Projetos em andamento aparecem primeiro na lista de vínculo.
 const statusOrder = { ativo: 0, proposta: 1, lead: 2, pausado: 3, concluido: 4 };
 
 export default function TeamForm({ member, clients, payments, onPaymentsChange, onClose, onSaved }: TeamFormProps) {

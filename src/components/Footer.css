@@ -38,7 +38,7 @@
   color: var(--muted);
 }
 
-/* Link para deixar avaliação no Perfil da Empresa no Google */
+/* Avaliação no Google */
 .footer__review {
   display: inline-flex;
   align-items: center;
@@ -149,7 +149,6 @@
     grid-column: 1 / -1;
   }
 
-  /* No celular, os links repetem o menu: some */
   .footer__links {
     display: none;
   }

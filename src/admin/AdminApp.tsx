@@ -77,7 +77,6 @@ export default function AdminApp() {
     }
     supabase.auth.getSession().then(({ data }) => check(data.session));
     const { data: listener } = supabase.auth.onAuthStateChange((_event, current) => {
-      // Evita chamar o Supabase dentro do callback (recomendação da lib).
       setTimeout(() => check(current), 0);
     });
     return () => listener.subscription.unsubscribe();

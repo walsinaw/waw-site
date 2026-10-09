@@ -16,10 +16,6 @@ import type {
 import { prepareCover, preparePhoto } from './image';
 import { seedProjects } from './seed';
 
-/**
- * Com VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY no .env, tudo vai para o Supabase.
- * Sem eles, o site roda em "modo demonstração": os dados ficam só no navegador (localStorage).
- */
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
@@ -115,7 +111,6 @@ export async function deleteProject(id: number) {
   unwrap(await supabase.from('projects').delete().eq('id', id));
 }
 
-/** Salva a nova ordem (lista já ordenada). */
 export async function reorderProjects(ordered: Project[]) {
   const updates = ordered.map((p, index) => ({ id: p.id, position: index + 1 }));
   if (!supabase) {
@@ -130,7 +125,6 @@ export async function reorderProjects(ordered: Project[]) {
 }
 
 export async function uploadCover(file: File): Promise<string> {
-  // Sem limite de tamanho: a imagem é recortada, reduzida e comprimida antes de subir.
   const cover = await prepareCover(file);
   if (!supabase) return fileToDataUrl(cover);
   const path = `${crypto.randomUUID()}.webp`;
@@ -187,7 +181,6 @@ export async function deleteClient(id: number) {
   unwrap(await supabase.from('clients').delete().eq('id', id));
 }
 
-/** Chamado pelo formulário do site: vira um lead no painel. */
 export async function createLead(lead: LeadInput) {
   if (!supabase) {
     await saveClient({
@@ -205,8 +198,6 @@ export async function createLead(lead: LeadInput) {
     });
     return;
   }
-  // Sem .select(): o visitante pode criar o lead, mas não pode ler a tabela.
-  // Os outros campos ficam com o valor padrão do banco.
   unwrap(await supabase.from('clients').insert({ ...lead, status: 'lead', source: 'site' }));
 }
 
@@ -223,7 +214,6 @@ export async function listTeam(): Promise<TeamMemberWithPhoto[]> {
       .map((m) => ({ ...m, photo_url: m.photo_path }));
   }
   const members = unwrap(await supabase.from('team').select('*').order('name')) as TeamMember[];
-  // As fotos ficam num bucket privado: gera links temporários (1 hora) para exibir.
   const paths = members.map((m) => m.photo_path).filter((p): p is string => !!p);
   const urls = new Map<string, string>();
   if (paths.length) {
@@ -261,7 +251,6 @@ export async function deleteTeamMember(member: TeamMember) {
   if (member.photo_path) await supabase.storage.from('team').remove([member.photo_path]);
 }
 
-/** Envia a foto (recortada em quadrado) e devolve o caminho para salvar + um link para mostrar já. */
 export async function uploadTeamPhoto(file: File): Promise<{ path: string; url: string }> {
   const photo = await preparePhoto(file);
   if (!supabase) {
@@ -308,7 +297,6 @@ export async function deleteTeamPayment(id: number) {
 // Acessos (logins do painel)
 // ---------------------------------------------------------------------------
 
-/** O que o login atual pode ver. null = não tem acesso ao painel. */
 export async function getMyAccess(userId: string): Promise<Access | null> {
   if (!supabase) return { name: 'Demo', role: 'admin', permissions: [], active: true };
   const { data } = await supabase
@@ -317,7 +305,6 @@ export async function getMyAccess(userId: string): Promise<Access | null> {
     .eq('user_id', userId)
     .maybeSingle();
   if (!data) return null;
-  // Antes da atualização 03 a tabela só tinha user_id: quem estava nela era admin.
   return {
     name: data.name ?? '',
     role: data.role ?? 'admin',
@@ -329,12 +316,9 @@ export async function getMyAccess(userId: string): Promise<Access | null> {
 const notPublished =
   'A função "admin-users" ainda não está publicada no Supabase (Edge Functions). Veja o passo "Acessos" no README.';
 
-/** Chama a Edge Function "admin-users" (a única que pode criar logins). */
 async function usersFunction<T>(body: Record<string, unknown>): Promise<T> {
   const { data, error } = await supabase!.functions.invoke('admin-users', { body });
   if (error) {
-    // Quando a função responde, "context" é a resposta HTTP com { error: "mensagem" }.
-    // Quando nem chega nela (não publicada, sem internet), "context" é outra coisa.
     const context = (error as { context?: unknown }).context;
     if (context instanceof Response) {
       const body = await context.json().catch(() => null);
@@ -379,7 +363,6 @@ export async function deletePanelUser(userId: string) {
   await usersFunction({ action: 'delete', user_id: userId });
 }
 
-/** Cada pessoa pode trocar a própria senha. */
 export async function changeMyPassword(password: string) {
   if (!supabase) return;
   const { error } = await supabase.auth.updateUser({ password });

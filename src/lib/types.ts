@@ -1,6 +1,6 @@
 export type LinkType = 'behance' | 'site' | 'instagram' | 'none';
 
-/** Lista única de especialidades: usada no portfólio, nos clientes e na equipe. */
+// Especialidades
 export const specialties = [
   'Landing Page',
   'Site + Sistema',
@@ -17,7 +17,6 @@ export const specialties = [
   'Tráfego Pago',
 ] as const;
 
-/** Especialidades de um projeto ficam salvas como texto "A · B · C". */
 export const joinCategories = (items: string[]) => items.join(' · ');
 export const splitCategories = (value: string) =>
   value
@@ -54,13 +53,10 @@ export const statusLabels: Record<ClientStatus, string> = {
 
 export type ValueType = 'fixo' | 'mensal';
 
-/** Uma cobrança do cliente (valor do projeto, parcela, mensalidade ou extra). */
 export interface ExtraPayment {
   description: string;
   value: number;
-  /** Data limite de pagamento (vencimento) */
   date: string | null;
-  /** Quando o cliente pagou; vazio = em aberto */
   paid_on?: string | null;
 }
 
@@ -72,15 +68,12 @@ export interface Client {
   whatsapp: string;
   email: string;
   instagram: string;
-  /** CPF ou CNPJ do responsável */
   document: string;
   services: string[];
   status: ClientStatus;
   value: number | null;
   value_type: ValueType;
-  /** Cobranças com vencimento e data de pagamento */
   extra_payments: ExtraPayment[];
-  /** Dia do mês em que vence a mensalidade (só para valor mensal) */
   due_day: number | null;
   start_date: string | null;
   notes: string;
@@ -104,12 +97,10 @@ export interface TeamMember {
   id: number;
   name: string;
   phone: string;
-  /** Caminho do arquivo no bucket privado "team" (ou data URL no modo demonstração) */
   photo_path: string | null;
   areas: string[];
   contract_type: ContractType;
   agreed_value: number | null;
-  /** Clientes/projetos em que a pessoa está trabalhando */
   client_ids: number[];
   notes: string;
   created_at: string;
@@ -122,9 +113,7 @@ export interface TeamPayment {
   member_id: number;
   amount: number;
   paid_on: string;
-  /** Ex.: "Setembro/2026" (fixo) ou o que foi pago (freelancer) */
   reference: string;
-  /** Projeto (cliente) ao qual o pagamento se refere, no freelancer */
   client_id: number | null;
   notes: string;
   created_at: string;
@@ -136,7 +125,6 @@ export type TeamPaymentInput = Omit<TeamPayment, 'id' | 'created_at'>;
 // Acessos ao painel
 // ---------------------------------------------------------------------------
 
-/** Áreas do painel que um login "equipe" pode receber. A página de Acessos é só do admin. */
 export const areas = ['dashboard', 'portfolio', 'clientes', 'funcionarios'] as const;
 export type Area = (typeof areas)[number];
 
@@ -154,7 +142,6 @@ export const roleLabels: Record<Role, string> = {
   equipe: 'Equipe',
 };
 
-/** O que o login atual pode ver (linha dele na tabela admins). */
 export interface Access {
   name: string;
   role: Role;

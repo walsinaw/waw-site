@@ -11,7 +11,7 @@ interface TeamPaymentsProps {
   onChange: () => void;
 }
 
-// Registro de pagamentos de um funcionário (fica salvo na hora, separado do "Salvar" do formulário).
+// Pagamentos do funcionário
 export default function TeamPayments({ member, payments, clients, onChange }: TeamPaymentsProps) {
   const monthly = member.contract_type === 'fixo';
   const mine = payments.filter((p) => p.member_id === member.id);
@@ -27,7 +27,6 @@ export default function TeamPayments({ member, payments, clients, onChange }: Te
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
-  // Os projetos do funcionário aparecem primeiro na lista.
   const sortedClients = [...clients].sort(
     (a, b) =>
       Number(member.client_ids.includes(b.id)) - Number(member.client_ids.includes(a.id)) ||

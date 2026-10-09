@@ -22,7 +22,6 @@ export default function HomePage() {
   const { hash } = useLocation();
   const [selectedServices, setSelectedServices] = useState<ServiceId[]>([]);
 
-  // Vindo de outra página com /#secao, rola até a seção depois de renderizar.
   useEffect(() => {
     if (!hash) return;
     document.getElementById(hash.slice(1))?.scrollIntoView();

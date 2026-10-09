@@ -1,6 +1,6 @@
 import type { Project } from './types';
 
-// Projetos de exemplo do modo demonstração (os mesmos do supabase/schema.sql).
+// Projetos de exemplo (modo demonstração)
 const base = {
   cover_url: null,
   link_type: 'none' as const,

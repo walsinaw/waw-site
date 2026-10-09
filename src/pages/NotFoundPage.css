@@ -5,7 +5,6 @@
   padding-top: calc(var(--section-y) + 40px);
 }
 
-/* "404" gigante e apagado, no vermelho da WAW */
 .not-found__code {
   font-family: var(--font-pirso);
   font-weight: 600;

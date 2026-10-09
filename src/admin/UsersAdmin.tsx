@@ -71,7 +71,6 @@ export default function UsersAdmin() {
             {users.map((user) => {
               const isMe = user.user_id === myId;
               const displayName = user.name || user.email.split('@')[0];
-              // Login vinculado a um funcionário: usa a foto cadastrada em Funcionários.
               const member = memberOf(user.team_id);
               return (
                 <li

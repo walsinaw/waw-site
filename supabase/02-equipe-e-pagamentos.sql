@@ -48,9 +48,7 @@ insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_typ
 values ('team', 'team', false, 5242880, array['image/jpeg', 'image/png', 'image/webp'])
 on conflict (id) do nothing;
 
--- Quem pode ver/editar funcionários e as fotos deles.
--- Se a atualização 03 (logins com áreas) já foi rodada, usa a regra por área ("funcionarios");
--- assim, rodar este arquivo de novo não tira o acesso dos logins de equipe.
+-- Funcionários e fotos da equipe
 do $$
 declare
   rule text := case

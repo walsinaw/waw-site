@@ -5,8 +5,6 @@ import Footer from '../components/Footer';
 import Arrow from '../components/Arrow';
 import './NotFoundPage.css';
 
-// Endereço que não existe. A Vercel responde 200 para todas as rotas (o site é uma SPA),
-// então o "noindex" é o que avisa o Google para não guardar esta página.
 export default function NotFoundPage() {
   useEffect(() => {
     window.scrollTo(0, 0);

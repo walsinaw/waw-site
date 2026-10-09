@@ -33,7 +33,6 @@ export default function Intro() {
       <div className="container founder">
         <figure className="founder__photo">
           <span className="founder__picture">
-            {/* Versões menores para o celular; o navegador escolhe pelo tamanho e pela densidade da tela */}
             <img
               src={julia}
               srcSet={`${juliaSmall} 700w, ${julia} 1000w`}

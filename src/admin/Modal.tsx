@@ -1,17 +1,14 @@
 import { useEffect, type ReactNode } from 'react';
 
 interface ModalProps {
-  /** Primeira parte do título, em branco (ex.: "Cadastrar") */
   title: string;
-  /** Parte destacada em vermelho (ex.: "Novo Projeto") */
   highlight: string;
   onClose: () => void;
   children: ReactNode;
-  /** small: janelas curtas, como trocar senha */
   size?: 'small';
 }
 
-// Janela centralizada usada nos cadastros e edições do painel.
+// Janela dos cadastros e edições
 export default function Modal({ title, highlight, onClose, children, size }: ModalProps) {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => event.key === 'Escape' && onClose();

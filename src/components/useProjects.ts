@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { listProjects } from '../lib/api';
 import type { Project } from '../lib/types';
 
-/** Projetos publicados para o site (featuredOnly = só os marcados para a home). */
 export function useProjects(featuredOnly = false) {
   const [projects, setProjects] = useState<Project[] | null>(null);
 

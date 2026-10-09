@@ -1,4 +1,4 @@
-/* Página /privacidade: texto longo, então colunas estreitas e boa leitura */
+/* Página /privacidade */
 .privacy {
   padding-top: calc(var(--section-y) + 40px);
 }
@@ -9,7 +9,6 @@
   color: var(--muted);
 }
 
-/* mesmas colunas do .split, mas o texto entra seção por seção na rolagem */
 .privacy__layout {
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(0, 8fr);

@@ -135,7 +135,6 @@ export default function Footer() {
           </div>
         </div>
       </footer>
-      {/* O rodapé está em todas as páginas do site (e não no /admin): o aviso de cookies vem junto */}
       <CookieBanner />
     </>
   );

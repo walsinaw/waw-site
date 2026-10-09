@@ -23,7 +23,7 @@
   color: var(--muted);
 }
 
-/* Grade limpa: quadrados colados, em preto e branco até o mouse passar */
+/* Grade */
 .portfolio__grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -48,7 +48,6 @@
   transition: filter 0.6s var(--ease), transform 0.9s var(--ease);
 }
 
-/* Escurece a base para o nome ficar legível */
 .project::after {
   content: '';
   position: absolute;
@@ -133,7 +132,7 @@
   outline-offset: -2px;
 }
 
-/* Sem mouse (celular): cor, nome e selo sempre visíveis */
+/* Celular */
 @media (hover: none) {
   .project__image {
     filter: none;

@@ -1,4 +1,4 @@
-// Textos fixos do site. Projetos e clientes ficam no painel /admin.
+// Textos fixos do site
 
 export type ServiceId = 'design' | 'web' | 'ads';
 
@@ -19,7 +19,7 @@ export const contact = {
   behanceUrl: 'https://www.behance.net/walsinaw',
 };
 
-// "Nossas Soluções" — textos do Figma
+// Nossas Soluções
 export const services: Service[] = [
   {
     id: 'design',

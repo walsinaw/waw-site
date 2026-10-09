@@ -1,13 +1,7 @@
 -- WAW Studio — banco do site e do painel /admin
--- Rode este arquivo inteiro no Supabase: Dashboard → SQL Editor → New query → colar → Run.
--- Pode rodar de novo sem problema (não duplica nada).
--- ATENÇÃO: se rodar de novo depois da atualização 03, rode também o 05-restaura-acessos.sql,
--- senão os logins de equipe deixam de ver o portfólio e os clientes.
--- DEPOIS rode também supabase/02-equipe-e-pagamentos.sql.
--- ANTES: crie seu usuário em Authentication → Users → Add user (com o e-mail do final deste arquivo).
 
 -- ---------------------------------------------------------------
--- Admins: só quem estiver nesta tabela acessa o painel.
+-- Admins
 -- ---------------------------------------------------------------
 create table if not exists public.admins (
   user_id uuid primary key references auth.users (id) on delete cascade,
@@ -43,14 +37,14 @@ create policy "admins leem a própria linha" on public.admins
 create table if not exists public.projects (
   id bigint generated always as identity primary key,
   title text not null check (char_length(title) between 1 and 120),
-  categories text not null default '',          -- ex.: "Landing Page · Desenvolvimento Web · UX/UI"
+  categories text not null default '',
   description text not null default '',
   cover_url text,
   link_type text not null default 'none' check (link_type in ('behance', 'site', 'none')),
   link_url text,
-  featured boolean not null default true,        -- aparece na home
+  featured boolean not null default true,
   published boolean not null default true,
-  position integer not null default 0,           -- ordem de exibição
+  position integer not null default 0,
   created_at timestamptz not null default now()
 );
 
@@ -61,7 +55,6 @@ alter table public.projects enable row level security;
 grant select on public.projects to anon;
 grant select, insert, update, delete on public.projects to authenticated;
 
--- Visitante (anon) não pode chamar private.is_admin(): por isso a política dele é separada.
 drop policy if exists "público vê projetos publicados" on public.projects;
 drop policy if exists "visitante vê projetos publicados" on public.projects;
 create policy "visitante vê projetos publicados" on public.projects
@@ -117,7 +110,6 @@ alter table public.clients enable row level security;
 grant insert on public.clients to anon;
 grant select, insert, update, delete on public.clients to authenticated;
 
--- O formulário do site pode só CRIAR leads (não lê nada).
 drop policy if exists "site cria leads" on public.clients;
 create policy "site cria leads" on public.clients
   for insert to anon, authenticated
@@ -172,7 +164,7 @@ create policy "admin apaga imagens" on storage.objects
   using (bucket_id = 'portfolio' and (select private.is_admin()));
 
 -- ---------------------------------------------------------------
--- Projetos iniciais (pode apagar/editar pelo painel depois)
+-- Projetos iniciais
 -- ---------------------------------------------------------------
 insert into public.projects (title, categories, description, position)
 select * from (values
@@ -187,11 +179,11 @@ select * from (values
 where not exists (select 1 from public.projects);
 
 -- ---------------------------------------------------------------
--- Libera você como admin (o usuário precisa já existir em Authentication → Users)
+-- Primeiro admin
 -- ---------------------------------------------------------------
 insert into public.admins (user_id)
 select id from auth.users where email = 'juliawalsinaw@gmail.com'
 on conflict (user_id) do nothing;
 
--- Confere: tem que aparecer 1 linha com o seu e-mail. Se vier vazio, crie o usuário e rode de novo.
+-- Conferência
 select u.email as admin from public.admins a join auth.users u on u.id = a.user_id;

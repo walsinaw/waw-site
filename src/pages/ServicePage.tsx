@@ -11,7 +11,6 @@ import { usePageMeta } from '../lib/usePageMeta';
 import NotFoundPage from './NotFoundPage';
 import './ServicePage.css';
 
-/** "texto **destaque**" → texto <b>destaque</b> */
 function Rich({ text }: { text: string }) {
   return (
     <>
@@ -157,7 +156,6 @@ function BlockView({ block }: { block: Block }) {
 
 function ServiceContent({ id }: { id: ServiceId }) {
   const page = servicePages[id];
-  // O serviço da página já vem marcado no formulário de contato.
   const [selected, setSelected] = useState<ServiceId[]>([id]);
   const others = services.filter((s) => s.id !== id);
   useScrollReveal();
@@ -263,6 +261,5 @@ function ServiceContent({ id }: { id: ServiceId }) {
 export default function ServicePage() {
   const { slug } = useParams();
   if (!slug || !(slug in servicePages)) return <NotFoundPage />;
-  // key: trocar de /servicos/web para /servicos/ads recomeça a página do zero
   return <ServiceContent key={slug} id={slug as ServiceId} />;
 }

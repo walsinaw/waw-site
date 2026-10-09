@@ -1,6 +1,4 @@
-// Edge Function "admin-users": cria e gerencia os logins do painel.
-// Roda no servidor do Supabase, onde a chave secreta (service_role) fica guardada —
-// ela nunca vai para o site. Só administradores ativos conseguem usar.
+// Edge Function "admin-users": logins do painel
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
 const cors = {
@@ -13,7 +11,7 @@ const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } });
 
 const AREAS = ['dashboard', 'portfolio', 'clientes', 'funcionarios'];
-const BLOCKED = '876000h'; // ~100 anos: login bloqueado até ser liberado de novo
+const BLOCKED = '876000h';
 
 interface Payload {
   action?: string;
@@ -48,7 +46,6 @@ Deno.serve(async (req) => {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 
-  // Quem está pedindo? Precisa ser um administrador ativo.
   const token = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '');
   const {
     data: { user },
@@ -107,7 +104,6 @@ Deno.serve(async (req) => {
           .from('admins')
           .insert({ user_id: data.user.id, ...fields, active: true });
         if (insertError) {
-          // Não deixa um login "solto" sem permissões.
           await service.auth.admin.deleteUser(data.user.id);
           throw insertError;
         }
@@ -140,7 +136,6 @@ Deno.serve(async (req) => {
       case 'delete': {
         const id = String(body.user_id ?? '');
         if (id === user.id) return json({ error: 'Você não pode excluir o seu próprio login.' }, 400);
-        // A linha em "admins" some junto (on delete cascade).
         const { error } = await service.auth.admin.deleteUser(id);
         if (error) throw error;
         return json({ ok: true });

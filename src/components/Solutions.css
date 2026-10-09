@@ -29,7 +29,7 @@
   line-height: 1.15;
 }
 
-/* Cards: proporção 412×752 do Figma */
+/* Cards */
 .solutions__cards {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -39,7 +39,6 @@
   padding-left: 26px;
 }
 
-/* Os três cards sempre com a mesma altura (a sombra acompanha o card) */
 .service {
   position: relative;
   display: flex;
@@ -86,7 +85,7 @@
   transition: transform 0.45s var(--ease);
 }
 
-/* Hover dos frames solucoes.design/web/ads */
+/* Hover */
 .service:hover .service__card,
 .service:focus-visible .service__card,
 .service:hover .service__number,
@@ -183,7 +182,6 @@
   font-size: clamp(15px, 1.2vw, 17px);
 }
 
-/* Entre tablet e desktop pequeno o card fica estreito: deixa a altura livre */
 @media (max-width: 1180px) {
   .service__card {
     aspect-ratio: auto;

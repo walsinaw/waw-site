@@ -5,7 +5,6 @@ import Modal from './Modal';
 
 interface UserFormProps {
   user: PanelUser | null;
-  /** O próprio login: não pode se bloquear, se excluir nem deixar de ser admin */
   isMe: boolean;
   team: TeamMemberWithPhoto[];
   onClose: () => void;
@@ -17,7 +16,6 @@ const roleOptions: { value: Role; title: string; text: string }[] = [
   { value: 'admin', title: 'Administrador', text: 'Vê tudo e pode criar outros logins.' },
 ];
 
-/** Senha provisória fácil de ditar: sem letras parecidas (l, 1, O, 0). */
 function generatePassword() {
   const chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789';
   const bytes = crypto.getRandomValues(new Uint32Array(12));
@@ -52,7 +50,6 @@ export default function UserForm({ user, isMe, team, onClose, onSaved }: UserFor
       values.permissions.includes(area) ? values.permissions.filter((a) => a !== area) : [...values.permissions, area],
     );
 
-  // Ao vincular um funcionário sem nome preenchido, usa o nome dele.
   const pickMember = (id: number | null) => {
     set('team_id', id);
     const member = team.find((m) => m.id === id);
@@ -75,7 +72,6 @@ export default function UserForm({ user, isMe, team, onClose, onSaved }: UserFor
     try {
       await savePanelUser(next, user?.user_id);
       if (!user) {
-        // Mostra os dados para você mandar para a pessoa.
         setCreated({ email: next.email, password: next.password });
         setSaving(false);
       } else {

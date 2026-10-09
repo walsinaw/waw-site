@@ -39,7 +39,6 @@ export default function ProjectsAdmin() {
     [projects, status, link],
   );
 
-  // A ordem dos cards é a ordem do site; as setas trocam o projeto de lugar.
   const move = async (project: Project, direction: -1 | 1) => {
     if (!projects) return;
     const index = projects.findIndex((p) => p.id === project.id);

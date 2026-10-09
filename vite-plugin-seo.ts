@@ -1,11 +1,4 @@
-// Plugin do Vite: tags de SEO/compartilhamento no index.html, schema (JSON-LD),
-// sitemap.xml, robots.txt e llms.txt, todos montados a partir de src/data/seo.ts.
-//
-// Variáveis (no .env ou na Vercel):
-//   VITE_SITE_URL                   endereço final do site (ex.: https://wawstudio.com.br)
-//   VITE_CLARITY_ID                 troca o projeto do Microsoft Clarity (padrão: CLARITY_ID em seo.ts)
-//   VITE_GA_ID                      troca a propriedade do Google Analytics (padrão: GA_ID em seo.ts)
-//   VITE_GOOGLE_SITE_VERIFICATION   troca o código do Google Search Console (padrão: GOOGLE_SITE_VERIFICATION em seo.ts)
+// Plugin de SEO: tags, JSON-LD, sitemap.xml, robots.txt e llms.txt
 import type { Plugin } from 'vite';
 import { business, CLARITY_ID, DEFAULT_SITE_URL, GA_ID, GOOGLE_SITE_VERIFICATION, pages } from './src/data/seo.ts';
 
@@ -28,8 +21,6 @@ export default function seo(env: SeoEnv): Plugin {
     '@context': 'https://schema.org',
     '@graph': [
       {
-        // Negócio local (o mesmo do Perfil da Empresa no Google): sede em Pelotas/RS, sem endereço
-        // aberto ao público, atendendo online todo o Brasil.
         '@type': 'ProfessionalService',
         '@id': `${siteUrl}/#organizacao`,
         name: business.name,
@@ -104,9 +95,7 @@ export default function seo(env: SeoEnv): Plugin {
   if (verification) {
     headTags.push(`<meta name="google-site-verification" content="${escape(verification)}" />`);
   }
-  // Google Analytics e Microsoft Clarity só carregam depois do "Aceitar" no aviso de cookies (LGPD).
-  // window.wawAnalytics() é chamado aqui (visita de quem já aceitou) e pelo CookieBanner (no clique).
-  // Nunca no /admin (sessões do painel têm dados de clientes) nem no localhost (seus testes).
+  // Analytics e Clarity
   const gaId = env.VITE_GA_ID || GA_ID;
   const clarityId = env.VITE_CLARITY_ID || CLARITY_ID;
   if (gaId || clarityId) {
@@ -183,16 +172,13 @@ ${pages.map((page) => `- [${page.title}](${siteUrl}${page.path}): ${page.descrip
   return {
     name: 'waw-seo',
     transformIndexHtml(html, ctx) {
-      // O logo do topo é o maior elemento da primeira tela no celular: o navegador já começa a baixá-lo.
       const logo = Object.keys(ctx.bundle ?? {}).find((file) => /assets\/logo-waw-[\w-]+\.webp$/.test(file));
       const preload = logo ? [`<link rel="preload" as="image" href="/${logo}" fetchpriority="high" />`] : [];
-      // Título e descrição fixos do HTML vêm de seo.ts (quem não roda JavaScript lê só estes).
       return html
         .replace(/<title>[^<]*<\/title>/, `<title>${escape(home.title)}</title>`)
         .replace(/<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${escape(home.description)}" />`)
         .replace('</head>', `    ${[...preload, ...headTags].join('\n    ')}\n  </head>`);
     },
-    // No npm run dev os arquivos também respondem, para dar para conferir.
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
         const name = req.url?.split('?')[0].slice(1) ?? '';

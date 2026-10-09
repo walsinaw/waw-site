@@ -170,7 +170,6 @@ export default function Grainient({
 }: GrainientProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Efeito 1: cria o contexto WebGL uma vez e pausa fora da tela / com a aba escondida
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -293,7 +292,6 @@ export default function Grainient({
     };
   }, []);
 
-  // Efeito 2: passa as props para os uniforms, sem recriar o contexto
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;

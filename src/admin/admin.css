@@ -1,7 +1,4 @@
-/* =====================================================================
-   Painel /admin — escuro como o site. O vermelho fica para o que importa:
-   ações, item ativo, leads e o hover dos cards (o mesmo dos cards de serviço).
-   ===================================================================== */
+/* Painel /admin */
 
 .admin,
 .admin-center {
@@ -433,7 +430,6 @@
   gap: 24px;
 }
 
-/* Cards vermelhos, na paleta da WAW */
 .card {
   display: flex;
   flex-direction: column;
@@ -444,7 +440,6 @@
   transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
 }
 
-/* mesmo hover dos cards de serviço do site */
 .card:hover {
   transform: translate(-3px, -6px);
   box-shadow: 3px 6px 0 var(--red-shadow);
@@ -532,7 +527,7 @@
   color: var(--white);
 }
 
-/* Status dos clientes: etiqueta branca com um ponto de cor */
+/* Status dos clientes */
 .tag--lead,
 .tag--proposta,
 .tag--ativo,
@@ -684,7 +679,6 @@
   margin-top: auto;
   font-family: var(--font-pirso);
   font-weight: 600;
-  /* acompanha a largura do card para valores longos (R$ 12.500,00) caberem */
   font-size: clamp(24px, 13cqi, 44px);
   line-height: 1;
   white-space: nowrap;
@@ -698,7 +692,6 @@
   color: var(--admin-muted);
 }
 
-/* Novos leads em vermelho: é o número que pede ação */
 .stat:first-child .stat__value {
   color: var(--red-bright);
 }
@@ -760,7 +753,6 @@
   font-size: 22px;
 }
 
-/* Sem itálico no painel: o destaque é só a cor */
 .admin em,
 .admin-center em,
 .modal em {
@@ -1144,7 +1136,7 @@
   color: var(--admin-muted);
 }
 
-/* Cobrança em aberto: mostra o status e marca como paga hoje com um clique */
+/* Cobrança em aberto */
 .charges__pay {
   display: flex;
   align-items: center;
@@ -1254,7 +1246,7 @@
   font-size: 26px;
 }
 
-/* Foto do funcionário vinculado, ao lado do seletor no cadastro de login */
+/* Funcionário vinculado ao login */
 .linked-member {
   display: flex;
   align-items: center;
@@ -1366,7 +1358,7 @@
   font-weight: 700;
 }
 
-/* Situação de pagamento do cliente no card: etiqueta escura com ponto de cor */
+/* Situação de pagamento do cliente */
 .card__pay--atrasado,
 .card__pay--aberto,
 .card__pay--em-dia {
@@ -1391,7 +1383,6 @@
   background: currentColor;
 }
 
-/* Atrasado chama atenção: etiqueta branca */
 .card__pay--atrasado {
   background: var(--white);
   color: var(--red);

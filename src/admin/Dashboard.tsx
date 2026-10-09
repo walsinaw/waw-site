@@ -21,13 +21,11 @@ export default function Dashboard() {
 
   const loading = projects === null || clients === null;
   const count = (status: Client['status']) => clients?.filter((c) => c.status === status).length ?? 0;
-  // Soma das mensalidades dos clientes em andamento.
   const monthly =
     clients
       ?.filter((c) => c.status === 'ativo' && c.value_type === 'mensal')
       .reduce((sum, c) => sum + (c.value ?? 0), 0) ?? 0;
   const leads = clients?.filter((c) => c.status === 'lead').slice(0, 5) ?? [];
-  // Tudo que ainda não foi pago: atrasados primeiro, depois pelo vencimento mais próximo.
   const pending = (clients ?? [])
     .flatMap((client) =>
       clientCharges(client)

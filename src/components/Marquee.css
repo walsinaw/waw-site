@@ -31,7 +31,7 @@
   white-space: nowrap;
 }
 
-/* separador: o W vermelho da WAW entre os itens */
+/* Separador */
 .marquee__list li::after {
   content: '';
   flex: none;

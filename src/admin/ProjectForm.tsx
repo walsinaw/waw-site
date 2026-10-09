@@ -25,7 +25,6 @@ const linkFields: Record<LinkType, { label: string; placeholder: string }> = {
   none: { label: 'Link', placeholder: 'Sem link: o card não leva para lugar nenhum' },
 };
 
-/** Aceita "@perfil", "perfil", "instagram.com/perfil" ou o link completo. */
 function normalizeLink(type: LinkType, value: string) {
   if (type === 'instagram' && !/instagram\.com/i.test(value)) {
     return `https://www.instagram.com/${value.replace(/^@/, '').replace(/\/+$/, '')}/`;

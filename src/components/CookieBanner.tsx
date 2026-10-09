@@ -3,14 +3,12 @@ import { Link } from 'react-router-dom';
 import { COOKIES_OPEN_EVENT as OPEN_EVENT, COOKIES_STORAGE_KEY as STORAGE_KEY } from '../lib/cookies';
 import './CookieBanner.css';
 
-// Aviso de cookies (LGPD): Google Analytics e Microsoft Clarity só carregam depois do "Aceitar".
-// A escolha fica no navegador; o link "Preferências de cookies" do rodapé abre o aviso de novo.
+// Aviso de cookies (LGPD)
 
 type Choice = 'aceito' | 'recusado';
 
 declare global {
   interface Window {
-    /** Definido no index.html (vite-plugin-seo.ts): carrega Analytics e Clarity. */
     wawAnalytics?: () => void;
   }
 }
@@ -28,11 +26,10 @@ function saveChoice(choice: Choice) {
   try {
     localStorage.setItem(STORAGE_KEY, choice);
   } catch {
-    /* navegador sem armazenamento: o aviso volta na próxima visita */
+    /* ignorado */
   }
 }
 
-// Apaga os cookies que o Analytics (_ga…) e o Clarity (_clck, _clsk…) criaram.
 function clearAnalyticsCookies() {
   const host = location.hostname;
   const domains = ['', host, `.${host}`, `.${host.split('.').slice(-3).join('.')}`];
@@ -67,7 +64,6 @@ export default function CookieBanner() {
     saveChoice('recusado');
     setOpen(false);
     if (wasAccepted) {
-      // Os scripts já carregados só param de vez com a página recarregada.
       clearAnalyticsCookies();
       location.reload();
     }

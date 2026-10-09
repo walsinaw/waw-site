@@ -21,7 +21,6 @@ export default function Connected() {
       </div>
 
       <div className="container">
-        {/* Leitores de tela leem o texto como está na tela: "Estratégia + Design + …" */}
         <p className="connected__equation">
           {connected.pillars.map((pillar, index) => (
             <Fragment key={pillar}>

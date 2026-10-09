@@ -7,7 +7,6 @@ function setTag(selector: string, attribute: 'content' | 'href', value: string) 
   document.head.querySelector(selector)?.setAttribute(attribute, value);
 }
 
-/** Atualiza título, descrição, link canônico e prévia de compartilhamento da página atual (dados em src/data/seo.ts). */
 export function usePageMeta(path: string) {
   useEffect(() => {
     const { title, description } = pageMeta(path);

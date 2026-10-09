@@ -11,7 +11,6 @@ export interface Charge {
   due: string | null;
   paid_on: string | null;
   state: ChargeState;
-  /** Mensalidade do mês atual que ainda não foi lançada na lista */
   virtual?: boolean;
 }
 
@@ -26,7 +25,6 @@ export function chargeState(payment: Pick<ExtraPayment, 'date' | 'paid_on'>, tod
   return payment.date && payment.date < today ? 'atrasado' : 'aberto';
 }
 
-/** Vencimento da mensalidade no mês atual (dia 31 vira o último dia em meses mais curtos). */
 export function monthDue(dueDay: number, today = localToday()) {
   const [year, month] = today.split('-').map(Number);
   const lastDay = new Date(year, month, 0).getDate();
@@ -35,7 +33,6 @@ export function monthDue(dueDay: number, today = localToday()) {
 
 export const sameLabel = (a: string, b: string) => a.trim().toLowerCase() === b.trim().toLowerCase();
 
-/** Todas as cobranças do cliente, incluindo a mensalidade do mês se ela ainda não foi lançada. */
 export function clientCharges(client: Client, today = localToday()): Charge[] {
   const charges: Charge[] = client.extra_payments.map((p) => ({
     description: p.description,
@@ -66,12 +63,10 @@ export function clientCharges(client: Client, today = localToday()): Charge[] {
   return charges;
 }
 
-/** "05/09" — datas curtas das cobranças. */
 export const dayMonth = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', timeZone: 'UTC' });
 
 const byDue = (a: Charge, b: Charge) => (a.due ?? '9999').localeCompare(b.due ?? '9999');
 
-/** Resumo para o card e o dashboard: quanto falta, o que venceu e o último pagamento. */
 export function billing(client: Client, today = localToday()) {
   const charges = clientCharges(client, today);
   const open = charges.filter((c) => c.state !== 'pago').sort(byDue);

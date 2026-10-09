@@ -1,5 +1,4 @@
-// Páginas de cada nicho (/servicos/design, /servicos/web, /servicos/ads).
-// Em qualquer texto, **assim** vira destaque (negrito / Pirso nos títulos).
+// Páginas de cada nicho (/servicos/…)
 import type { ServiceId } from './content';
 
 export interface Faq {
@@ -8,7 +7,7 @@ export interface Faq {
 }
 
 export type Block =
-  /** Título + texto; "big" são frases grandes em lista; "chips" são etiquetas */
+  // Título + texto
   | {
       type: 'statement';
       id?: string;
@@ -21,14 +20,14 @@ export type Block =
       outro?: string[];
       light?: boolean;
     }
-  /** Lista numerada em linhas (serviços) */
+  // Lista de serviços
   | {
       type: 'services';
       eyebrow: string;
       title: string;
       items: { title: string; text?: string; tags?: string }[];
     }
-  /** Etapas numeradas em grade (processo) */
+  // Etapas
   | {
       type: 'steps';
       eyebrow: string;
@@ -36,7 +35,7 @@ export type Block =
       intro?: string[];
       items: { title: string; text: string }[];
     }
-  /** Chamada vermelha no meio da página */
+  // Chamada vermelha
   | { type: 'band'; title: string; text?: string[]; button: string };
 
 export interface ServicePageData {

@@ -2,7 +2,6 @@ import { useState, type FormEvent } from 'react';
 import { changeMyPassword } from '../lib/api';
 import Modal from './Modal';
 
-// Qualquer pessoa logada troca a própria senha (ex.: a senha provisória que recebeu).
 export default function PasswordForm({ onClose }: { onClose: () => void }) {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
